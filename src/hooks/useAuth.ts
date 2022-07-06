@@ -1,7 +1,7 @@
 import {useMutation} from '@apollo/client';
 import {useEffect, useState} from 'react';
 import {LOGIN, REGISTER} from '../graphql/mutations';
-import {GET_USER} from '../graphql/queries';
+import {CURRENT_USER} from '../graphql/queries/auth';
 import ExpireStorage from '../helpers/saveDataToStorage';
 import {useForm} from './useForm';
 
@@ -19,17 +19,15 @@ export const useAuth = () => {
       update: (cache, {data}) => {
         if (data.login.error) return;
 
-        const newData = {getUser: data.login.user};
-        cache.writeQuery({query: GET_USER, data: newData});
+        cache.writeQuery({
+          query: CURRENT_USER,
+          data: {currentUser: data.login.user},
+        });
       },
       onCompleted: data => {
         if (data.login.error) return;
 
-        const dataToStorage = {
-          id: data.login.user.id,
-          token: data.login.token,
-        };
-        ExpireStorage.setItem('x-token', dataToStorage, 60);
+        ExpireStorage.setItem('x-token', data.login.token, 60);
       },
     },
   );
@@ -37,11 +35,12 @@ export const useAuth = () => {
   const [register, {data: registerData, loading: registerLoading}] =
     useMutation(REGISTER, {
       update: (cache, {data}) => {
-        console.log({data});
         if (data.createUser.error) return;
 
-        const newData = {getUser: data.login.user};
-        cache.writeQuery({query: GET_USER, data: newData});
+        cache.writeQuery({
+          query: CURRENT_USER,
+          data: {currentUser: data.createUser.user},
+        });
       },
       onCompleted: data => {
         if (data.createUser.error) return;

@@ -1,24 +1,26 @@
-/* eslint-disable curly */
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {LoginScreen} from '../screens/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen';
-import {useApolloClient, useQuery} from '@apollo/client';
-import {GET_USER} from '../graphql/queries';
+import {useQuery} from '@apollo/client';
 import {LoadingScreen} from '../screens/LoadingScreen';
 import DrawerNavigator from './DrawerNavigator';
+import {CURRENT_USER} from '../graphql/queries/auth';
+import {CurrentUserResponse} from '../interfaces/user';
 
 const Stack = createNativeStackNavigator();
 
 export const Navigator = () => {
-  const client = useApolloClient();
-  const {loading, data, error, refetch} = useQuery(GET_USER, {
-    fetchPolicy: 'cache-first',
-  });
+  const {
+    data: userData,
+    loading,
+    refetch,
+    error,
+    client,
+  } = useQuery(CURRENT_USER);
+  const user = (userData as CurrentUserResponse)?.currentUser;
 
-  client.onClearStore(async () => {
-    refetch();
-  });
+  client.onClearStore(refetch);
 
   if (loading) return <LoadingScreen />;
 
@@ -28,7 +30,7 @@ export const Navigator = () => {
         headerShown: false,
         contentStyle: {backgroundColor: 'white'},
       }}>
-      {!data || error ? (
+      {!user || error ? (
         <>
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />

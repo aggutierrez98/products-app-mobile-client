@@ -1,3 +1,5 @@
+import {QueryResult} from '@apollo/client';
+import {CurrentUserResponse} from './user';
 export interface LoginResultsInterface {
   user: {
     __typename: string;
@@ -9,3 +11,5 @@ export interface LoginResultsInterface {
   };
   token?: string;
 }
+
+export type CurrentUserRes = QueryResult<CurrentUserResponse>;

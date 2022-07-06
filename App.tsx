@@ -1,4 +1,3 @@
-/* eslint-disable curly */
 import React from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
@@ -14,16 +13,13 @@ const httpLink = createUploadLink({
   uri: Config.API_URL,
 });
 
-const authLink = setContext(async (operation, {headers}) => {
+const authLink = setContext(async (_, {headers}) => {
   const token = await ExpireStorage.getItem(Config.AUTH_KEY);
-
-  if (operation.variables && operation.operationName === 'getUser')
-    operation.variables.id = token ? token.id : '';
 
   return {
     headers: {
       ...headers,
-      'x-token': token ? `${token.token}` : '',
+      'x-token': token ? `${token}` : '',
     },
   };
 });

@@ -10,8 +10,13 @@ import {GET_CATEGORIES, GET_PRODUCT} from '../graphql/queries';
 import {useForm} from './useForm';
 import {ReactNativeFile} from 'apollo-upload-client';
 import {UPDATE_IMAGE_CLOUDINARY} from '../graphql/mutations';
-import {GET_USER} from '../graphql/queries/users';
-import {GetProductResponse, Product} from '../interfaces/products';
+import {CURRENT_USER} from '../graphql/queries/auth';
+import {
+  CurrentUserRes,
+  GetCategoriesRes,
+  GetProductRes,
+  Product,
+} from '../interfaces';
 
 export const useProduct = (id: string, name: string) => {
   const [tempUri, setTempUri] = useState<string>();
@@ -27,18 +32,19 @@ export const useProduct = (id: string, name: string) => {
     price: '',
   });
 
-  const {data: dataFromGetProduct}: {data: GetProductResponse | undefined} =
-    useQuery(GET_PRODUCT, {
-      variables: {id: String(id) || null},
-      skip: !id,
-    });
-  const {data: categoriesData} = useQuery(GET_CATEGORIES, {});
-  const {data: userData} = useQuery(GET_USER, {fetchPolicy: 'cache-only'});
+  const {data: productData}: GetProductRes = useQuery(GET_PRODUCT, {
+    variables: {id: String(id) || null},
+    skip: !id,
+  });
+  const {data: categoriesData}: GetCategoriesRes = useQuery(GET_CATEGORIES, {});
+  const {data: userData}: CurrentUserRes = useQuery(CURRENT_USER, {
+    fetchPolicy: 'cache-only',
+  });
   const [updateProduct] = useMutation(UPDATE_PRODUCT);
   const [createProduct] = useMutation(CREATE_PRODUCT);
   const [updateImage] = useMutation(UPDATE_IMAGE_CLOUDINARY);
 
-  const productFromApi = dataFromGetProduct?.getProduct;
+  const productFromApi = productData?.getProduct;
   const categories = categoriesData?.getCategories.categories;
 
   const saveOrUpdate = async () => {
@@ -80,12 +86,14 @@ export const useProduct = (id: string, name: string) => {
       await createProduct({
         variables: {
           product: {
-            id: product.id,
             category: product.category,
             name: product.name,
             price: Number(product.price),
-            user: userData.getUser.id,
+            user: userData?.currentUser?.id,
           },
+        },
+        onError: error => {
+          console.log({error});
         },
         update: (cache, {data: dataOfProduct}) => {
           cache.modify({

@@ -4,8 +4,13 @@ import {
   CREATE_CATEGORY,
   DELETE_CATEGORY,
 } from '../graphql/mutations/categories';
-import {GET_CATEGORIES, GET_USER} from '../graphql/queries';
-import {GetCategoriesResponse} from '../interfaces/categories';
+import {GET_CATEGORIES} from '../graphql/queries';
+import {CURRENT_USER} from '../graphql/queries/auth';
+import {
+  GetCategoriesRes,
+  GetCategoriesResponse,
+  CurrentUserRes,
+} from '../interfaces';
 
 export const useCategory = (closeModal: () => void) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -16,14 +21,14 @@ export const useCategory = (closeModal: () => void) => {
     data: categoriesData,
     refetch,
     reobserve,
-  } = useQuery(GET_CATEGORIES, {
+  }: GetCategoriesRes = useQuery(GET_CATEGORIES, {
     fetchPolicy: 'cache-first',
     variables: {
       limit: 5,
       skip: 0,
     },
   });
-  const {data: userData} = useQuery(GET_USER);
+  const {data: userData}: CurrentUserRes = useQuery(CURRENT_USER);
   const [createCategory, {data}] = useMutation(CREATE_CATEGORY);
 
   useEffect(() => {
@@ -75,7 +80,7 @@ export const useCategory = (closeModal: () => void) => {
       variables: {
         category: {
           name: newCategoryName,
-          user: userData.getUser.id,
+          user: userData?.currentUser?.id,
         },
       },
       onError: err => {

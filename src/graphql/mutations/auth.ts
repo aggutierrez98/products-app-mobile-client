@@ -28,7 +28,7 @@ export const REGISTER = gql`
 `;
 
 export const LOGIN = gql`
-  mutation login($email: String!, $password: String!) {
+  mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       ... on AuthResults {
         user {
@@ -37,6 +37,10 @@ export const LOGIN = gql`
           email
           image
           active
+          role {
+            id
+            name
+          }
         }
         token
       }

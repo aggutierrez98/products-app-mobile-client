@@ -1,9 +1,10 @@
-/* eslint-disable react-native/no-inline-styles */
+import {Picker} from '@react-native-picker/picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   Button,
   Image,
+  // Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,6 +13,7 @@ import {
 } from 'react-native';
 import {useUser} from '../hooks/useUser';
 import {UsersStackParams} from '../navigator/UsersNavigator';
+import {LoadingScreen} from './LoadingScreen';
 
 interface Props
   extends NativeStackScreenProps<UsersStackParams, 'UserScreen'> {}
@@ -22,43 +24,63 @@ export const UserScreen = ({
   },
 }: //   navigation,
 Props) => {
-  //   console.log({idFromParams, nameFromParams});
+  const {
+    loading,
+    onChange,
+    updateUserFunction,
+    tempUri,
+    user,
+    roles,
+    takePhoto,
+    takePhotoFromGallery,
+  } = useUser(idFromParams, nameFromParams);
 
-  //   const {
-  //     product,
-  //     categories,
-  //     saveOrUpdate,
-  //     onChange,
-  //     takePhoto,
-  //     takePhotoFromGallery,
-  //     tempUri,
-  //   } = useProduct(idFromParams, nameFromParams);
-
-  //   useEffect(() => {
-  //     navigation.setOptions({
-  //       title: nameFromParams ? nameFromParams : 'Sin nombre del producto',
-  //     });
-  //   }, [navigation, nameFromParams]);
-
-  useUser(idFromParams);
+  if (loading) <LoadingScreen />;
 
   return (
     <View style={styles.container}>
-      {/* <ScrollView>
-        <Text style={styles.label}>Nombre del producto</Text>
+      <ScrollView>
+        <Text style={styles.label}>Nombre del usuario</Text>
         <TextInput
           placeholder="Producto"
           style={styles.textInput}
           placeholderTextColor="grey"
-          value={product?.name || nameFromParams}
+          value={user?.name || nameFromParams}
           onChangeText={value => onChange(value, 'name')}
         />
+        <Text style={styles.label}>Seleccione el rol</Text>
 
-        <Button title="Guardar" onPress={saveOrUpdate} color="#5856d6" />
+        <Picker
+          selectedValue={user?.role}
+          style={{color: 'black'}}
+          onValueChange={itemValue => {
+            onChange(itemValue, 'role');
+          }}>
+          {roles?.map(role => (
+            <Picker.Item label={role.name} value={role.id} key={role.id} />
+          ))}
+        </Picker>
 
-        {product?.image?.length > 0 && !tempUri && (
+        <Button title="Guardar" onPress={updateUserFunction} color="#5856d6" />
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            marginTop: 10,
+          }}>
+          <Button title="Camara" onPress={takePhoto} color="#5856d6" />
+          <View style={{width: 10}} />
+          <Button
+            title="Galeria"
+            onPress={takePhotoFromGallery}
+            color="#5856d6"
+          />
+        </View>
+
+        {user?.image?.length > 0 && !tempUri && (
           <Image
-            source={{uri: product.image}}
+            source={{uri: user.image}}
             style={{width: '100%', height: 300, marginTop: 20}}
           />
         )}
@@ -69,7 +91,7 @@ Props) => {
             style={{width: '100%', height: 300, marginTop: 20}}
           />
         )}
-      </ScrollView> */}
+      </ScrollView>
     </View>
   );
 };

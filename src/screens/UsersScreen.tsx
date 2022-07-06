@@ -10,7 +10,7 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useQuery} from '@apollo/client';
 import {GET_USERS} from '../graphql/queries';
-import {GetUsersResponse} from '../interfaces/user';
+import {GetUsersRes} from '../interfaces';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {UsersStackParams} from '../navigator/UsersNavigator';
 
@@ -19,7 +19,7 @@ interface Props
 
 export const UsersScreen = ({navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
-  const {data, refetch} = useQuery(GET_USERS, {
+  const {data, refetch}: GetUsersRes = useQuery(GET_USERS, {
     fetchPolicy: 'cache-first',
     variables: {
       limit: 5,
@@ -27,7 +27,7 @@ export const UsersScreen = ({navigation}: Props) => {
     },
   });
 
-  const users = (data as GetUsersResponse | undefined)?.getUsers.users;
+  const users = data?.getUsers.users;
 
   const loadProductsFromBackend = async () => {
     setRefreshing(true);

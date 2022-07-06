@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
 import {Picker} from '@react-native-picker/picker';
@@ -13,7 +12,6 @@ import {
 } from 'react-native';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {useProduct} from '../hooks/useProduct';
-import {Category} from '../interfaces/products';
 
 interface Props
   extends NativeStackScreenProps<ProductsStackParams, 'ProductScreen'> {}
@@ -68,7 +66,7 @@ export const ProductScreen = ({
           onValueChange={itemValue => {
             onChange(itemValue, 'category');
           }}>
-          {categories?.map((category: Category) => (
+          {categories?.map(category => (
             <Picker.Item
               label={category.name}
               value={category.id}

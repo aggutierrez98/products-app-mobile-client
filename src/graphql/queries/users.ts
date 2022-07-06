@@ -21,24 +21,6 @@ export const GET_USERS = gql`
   }
 `;
 
-// export const GET_USER = gql`
-//   query getUser($id: ID!) {
-//     getUser(id: $id) {
-//       ... on User {
-//         id
-//         name
-//         active
-//         email
-//       }
-//       ... on InputError {
-//         error {
-//           message
-//         }
-//       }
-//     }
-//   }
-// `;
-
 export const GET_USER = gql`
   query getUser($id: ID!) {
     getUser(id: $id) {
@@ -46,6 +28,10 @@ export const GET_USER = gql`
       name
       active
       email
+      role {
+        id
+        name
+      }
     }
   }
 `;

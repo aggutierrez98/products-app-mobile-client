@@ -12,14 +12,14 @@ import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useQuery} from '@apollo/client';
 import {GET_PRODUCTS} from '../graphql/queries';
-import {GetProductsResponse} from '../interfaces/products';
+import {GetProductsRes} from '../interfaces';
 
 interface Props
   extends NativeStackScreenProps<ProductsStackParams, 'ProductsScreen'> {}
 
 export const ProductsScreen = ({navigation}: Props) => {
   const [refreshing, setRefreshing] = useState(false);
-  const {data, refetch} = useQuery(GET_PRODUCTS, {
+  const {data, refetch}: GetProductsRes = useQuery(GET_PRODUCTS, {
     fetchPolicy: 'cache-first',
     variables: {
       limit: 5,
@@ -27,8 +27,7 @@ export const ProductsScreen = ({navigation}: Props) => {
     },
   });
 
-  const products = (data as GetProductsResponse | undefined)?.getProducts
-    .products;
+  const products = data?.getProducts.products;
 
   const loadProductsFromBackend = async () => {
     setRefreshing(true);
