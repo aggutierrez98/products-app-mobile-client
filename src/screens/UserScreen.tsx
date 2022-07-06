@@ -1,6 +1,6 @@
 import {Picker} from '@react-native-picker/picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Button,
   Image,
@@ -11,10 +11,13 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import {componentStyles} from '../components/styles';
 import {useUser} from '../hooks/useUser';
 import {UsersStackParams} from '../navigator/UsersNavigator';
 import {LoadingScreen} from './LoadingScreen';
 
+export const DEFAULT_IMAGE =
+  'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541';
 interface Props
   extends NativeStackScreenProps<UsersStackParams, 'UserScreen'> {}
 
@@ -22,8 +25,16 @@ export const UserScreen = ({
   route: {
     params: {id: idFromParams = '', name: nameFromParams = ''},
   },
+  navigation,
 }: //   navigation,
+
 Props) => {
+  useEffect(() => {
+    navigation.setOptions({
+      title: nameFromParams,
+    });
+  }, [navigation, nameFromParams]);
+
   const {
     loading,
     onChange,
@@ -38,18 +49,27 @@ Props) => {
   if (loading) <LoadingScreen />;
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={componentStyles.avatarContainer}>
+          <Image
+            source={{
+              uri: user?.image || tempUri || DEFAULT_IMAGE,
+            }}
+            style={componentStyles.avatar}
+          />
+        </View>
+        <Text style={styles.label}>Email: {user.email}</Text>
+
         <Text style={styles.label}>Nombre del usuario</Text>
         <TextInput
-          placeholder="Producto"
+          placeholder="Usuario"
           style={styles.textInput}
           placeholderTextColor="grey"
           value={user?.name || nameFromParams}
           onChangeText={value => onChange(value, 'name')}
         />
         <Text style={styles.label}>Seleccione el rol</Text>
-
         <Picker
           selectedValue={user?.role}
           style={{color: 'black'}}
@@ -61,13 +81,12 @@ Props) => {
           ))}
         </Picker>
 
-        <Button title="Guardar" onPress={updateUserFunction} color="#5856d6" />
-
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
-            marginTop: 10,
+            marginTop: 20,
+            marginBottom: 30,
           }}>
           <Button title="Camara" onPress={takePhoto} color="#5856d6" />
           <View style={{width: 10}} />
@@ -78,27 +97,15 @@ Props) => {
           />
         </View>
 
-        {user?.image?.length > 0 && !tempUri && (
-          <Image
-            source={{uri: user.image}}
-            style={{width: '100%', height: 300, marginTop: 20}}
-          />
-        )}
-
-        {tempUri && (
-          <Image
-            source={{uri: tempUri}}
-            style={{width: '100%', height: 300, marginTop: 20}}
-          />
-        )}
-      </ScrollView>
-    </View>
+        <Button title="Guardar" onPress={updateUserFunction} color="#5856d6" />
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {flex: 1, marginTop: 10, marginHorizontal: 20},
-  label: {fontSize: 18, color: 'black'},
+  label: {fontSize: 18, color: 'black', marginTop: 15},
   textInput: {
     color: 'black',
     borderWidth: 1,

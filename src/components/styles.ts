@@ -4,7 +4,7 @@ export const colores = {
   primary: '#5856d6',
 };
 
-export const styles = StyleSheet.create({
+export const componentStyles = StyleSheet.create({
   globalMargin: {
     marginHorizontal: 20,
   },
@@ -24,13 +24,19 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   avatarContainer: {
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 20,
     alignItems: 'center',
   },
   avatar: {
-    width: 150,
-    height: 150,
-    borderRadius: 100,
+    width: 250,
+    height: 250,
+    borderRadius: 150,
+  },
+  avatarInProtected: {
+    width: 300,
+    height: 300,
+    borderRadius: 150,
   },
   menuContainer: {
     marginVertical: 30,

@@ -1,88 +1,114 @@
-/* eslint-disable react-native/no-inline-styles */
 import {
   DrawerContentComponentProps,
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
 import React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
-import {styles} from './styles';
-// import Icon from 'react-native-vector-icons/Ionicons';
+import {componentStyles} from './styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import ExpireStorage from '../helpers/saveDataToStorage';
+import {useApolloClient} from '@apollo/client';
 
 export const CustomDrawer = ({navigation}: DrawerContentComponentProps) => {
+  const client = useApolloClient();
+
+  const logout = async () => {
+    await ExpireStorage.removeItem('x-token');
+    await client.clearStore();
+  };
+
   return (
     <DrawerContentScrollView>
-      {/* Parte del avatar */}
-      <View style={styles.avatarContainer}>
+      {/* Parte del Logo */}
+      <View style={{alignItems: 'center', marginTop: 30, marginBottom: -10}}>
+        <Text style={{...componentStyles.menuTexto, fontWeight: 'bold'}}>
+          ProductosApp
+        </Text>
         <Image
-          source={{
-            uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+          source={require('../assets/react-logo-blue.png')}
+          style={{
+            width: 150,
+            height: 150,
           }}
-          style={styles.avatar}
         />
       </View>
 
       {/* Opciones del menu */}
-      <View style={styles.menuContainer}>
+      <View style={componentStyles.menuContainer}>
         <TouchableOpacity
           style={{
-            ...styles.menuBoton,
+            ...componentStyles.menuBoton,
             flexDirection: 'row',
             alignItems: 'center',
           }}
           onPress={() => navigation.navigate('ProductsNavigator')}>
           <Icon
-            style={{...styles.menuTexto, marginRight: 5}}
+            style={{...componentStyles.menuTexto, marginRight: 5}}
             name="inventory"
             size={23}
             color="black"
           />
-          <Text style={styles.menuTexto}>Productos</Text>
+          <Text style={componentStyles.menuTexto}>Products</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{
-            ...styles.menuBoton,
+            ...componentStyles.menuBoton,
             flexDirection: 'row',
             alignItems: 'center',
           }}
           onPress={() => navigation.navigate('CategoriesScreen')}>
           <Icon
-            style={{...styles.menuTexto, marginRight: 5}}
+            style={{...componentStyles.menuTexto, marginRight: 5}}
             name="category"
             size={23}
             color="black"
           />
-          <Text style={styles.menuTexto}>Categorias</Text>
+          <Text style={componentStyles.menuTexto}>Categories</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{
-            ...styles.menuBoton,
+            ...componentStyles.menuBoton,
             flexDirection: 'row',
             alignItems: 'center',
           }}
           onPress={() => navigation.navigate('UsersNavigator')}>
           <Icon
-            style={{...styles.menuTexto, marginRight: 5}}
+            style={{...componentStyles.menuTexto, marginRight: 5}}
             name="people"
             size={23}
             color="black"
           />
-          <Text style={styles.menuTexto}>Usuarios</Text>
+          <Text style={componentStyles.menuTexto}>Users</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{
-            ...styles.menuBoton,
+            ...componentStyles.menuBoton,
             flexDirection: 'row',
             alignItems: 'center',
           }}
-          onPress={() => navigation.navigate('ProtectedScreen')}>
+          onPress={() => navigation.navigate('ProfileScreen')}>
           <Icon
-            style={{...styles.menuTexto, marginRight: 5}}
+            style={{...componentStyles.menuTexto, marginRight: 5}}
             name="account-box"
             size={23}
             color="black"
           />
-          <Text style={styles.menuTexto}>Usuario</Text>
+          <Text style={componentStyles.menuTexto}>Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            ...componentStyles.menuBoton,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+          onPress={logout}>
+          <Icon
+            style={{...componentStyles.menuTexto, marginRight: 5}}
+            name="logout"
+            size={23}
+            color="black"
+          />
+          <Text style={componentStyles.menuTexto}>Logout</Text>
         </TouchableOpacity>
       </View>
     </DrawerContentScrollView>

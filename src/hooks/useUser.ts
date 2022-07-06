@@ -30,6 +30,7 @@ export const useUser = (id: string, name: string) => {
     setFormValues,
   } = useForm({
     id: '',
+    email: '',
     name: '',
     role: '',
     image: '',
@@ -39,6 +40,7 @@ export const useUser = (id: string, name: string) => {
     setFormValues({
       id: userFromApi?.id || id,
       name: userFromApi?.name || name,
+      email: userFromApi?.email || '',
       role: userFromApi?.role.id || '',
       image: userFromApi?.image || '',
     });
@@ -49,10 +51,13 @@ export const useUser = (id: string, name: string) => {
       variables: {
         user: {
           id,
-          name,
+          name: user.name,
           role: user.role,
-          // password,
+          // // password,
         },
+      },
+      onError: err => {
+        console.log({err});
       },
     });
   };
@@ -63,6 +68,7 @@ export const useUser = (id: string, name: string) => {
       type: data.assets![0].type,
       name: data.assets![0].fileName,
     });
+
     updateImage({
       variables: {
         image: fileToUpload,

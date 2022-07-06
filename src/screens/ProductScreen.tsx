@@ -34,19 +34,25 @@ export const ProductScreen = ({
 
   useEffect(() => {
     navigation.setOptions({
-      title: nameFromParams ? nameFromParams : 'Sin nombre del producto',
+      title: nameFromParams,
+    });
+  }, [navigation, nameFromParams]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: nameFromParams ? nameFromParams : 'Agregar Producto',
     });
   }, [navigation, nameFromParams]);
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
+    <ScrollView>
+      <View style={styles.container}>
         <Text style={styles.label}>Nombre del producto</Text>
         <TextInput
           placeholder="Producto"
           style={styles.textInput}
           placeholderTextColor="grey"
-          value={product?.name || nameFromParams}
+          value={product.name !== undefined ? product.name : nameFromParams}
           onChangeText={value => onChange(value, 'name')}
         />
         <Text style={styles.label}>Modifique el precio</Text>
@@ -107,8 +113,8 @@ export const ProductScreen = ({
             style={{width: '100%', height: 300, marginTop: 20}}
           />
         )}
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   );
 };
 

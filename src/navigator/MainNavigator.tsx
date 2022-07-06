@@ -4,13 +4,19 @@ import {LoginScreen} from '../screens/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen';
 import {useQuery} from '@apollo/client';
 import {LoadingScreen} from '../screens/LoadingScreen';
-import DrawerNavigator from './DrawerNavigator';
 import {CURRENT_USER} from '../graphql/queries/auth';
 import {CurrentUserResponse} from '../interfaces/user';
+import ProtectedNavigator from './ProtectedNavigator';
 
 const Stack = createNativeStackNavigator();
 
-export const Navigator = () => {
+export type MainNavigationParams = {
+  LoginScreen: undefined;
+  RegisterScreen: undefined;
+  ProtectedNavigator: undefined;
+};
+
+export const MainNavigator = () => {
   const {
     data: userData,
     loading,
@@ -36,7 +42,10 @@ export const Navigator = () => {
           <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         </>
       ) : (
-        <Stack.Screen name="HomeScreen" component={DrawerNavigator} />
+        <Stack.Screen
+          name="ProtectedNavigator"
+          component={ProtectedNavigator}
+        />
       )}
     </Stack.Navigator>
   );

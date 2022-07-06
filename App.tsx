@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
-import {Navigator} from './src/navigator/Navigator';
+import {MainNavigator} from './src/navigator/MainNavigator';
 import {ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client';
 import {setContext} from '@apollo/client/link/context';
 import ExpireStorage from './src/helpers/saveDataToStorage';
@@ -34,7 +34,7 @@ const App = () => {
     <SafeAreaProvider>
       <ApolloProvider client={client}>
         <NavigationContainer>
-          <Navigator />
+          <MainNavigator />
         </NavigationContainer>
       </ApolloProvider>
     </SafeAreaProvider>

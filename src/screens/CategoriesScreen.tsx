@@ -10,14 +10,14 @@ import {
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {DrawerScreenProps} from '@react-navigation/drawer';
-import {MainNavigationParams} from '../navigator/DrawerNavigator';
 import {MyModal} from '../components/CustomModal';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useCategory} from '../hooks/useCategory';
 import {categoriesStyles} from '../theme/categoriesTheme';
+import {ProtectedNavigationParams} from '../navigator/ProtectedNavigator';
 
 interface Props
-  extends DrawerScreenProps<MainNavigationParams, 'CategoriesScreen'> {}
+  extends DrawerScreenProps<ProtectedNavigationParams, 'CategoriesScreen'> {}
 
 export const CategoriesScreen = ({navigation}: Props) => {
   const {top} = useSafeAreaInsets();
@@ -51,7 +51,7 @@ export const CategoriesScreen = ({navigation}: Props) => {
       headerRight: () => (
         <TouchableOpacity
           activeOpacity={0.8}
-          style={{marginRight: 20}}
+          style={{marginRight: 15}}
           onPress={() =>
             setModalVisible((prevVisibility: boolean) => !prevVisibility)
           }>

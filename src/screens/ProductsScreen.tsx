@@ -44,6 +44,7 @@ export const ProductsScreen = ({navigation}: Props) => {
         marginHorizontal: 10,
       }}>
       <FlatList
+        style={{marginTop: 10}}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

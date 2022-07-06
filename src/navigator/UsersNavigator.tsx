@@ -1,13 +1,14 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
-import {Text, TouchableOpacity} from 'react-native';
-import {MainNavigationParams} from './DrawerNavigator';
-import {CommonActions} from '@react-navigation/native';
+import {ProtectedNavigationParams} from './ProtectedNavigator';
 import {UsersScreen} from '../screens/UsersScreen';
 import {UserScreen} from '../screens/UserScreen';
+import {TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {CommonActions, DrawerActions} from '@react-navigation/native';
 
 export type UsersStackParams = {
   UsersScreen: undefined;
@@ -17,42 +18,54 @@ export type UsersStackParams = {
 const Stack = createNativeStackNavigator<UsersStackParams>();
 
 interface Props
-  extends NativeStackScreenProps<MainNavigationParams, 'UsersNavigator'> {}
+  extends NativeStackScreenProps<ProtectedNavigationParams, 'UsersNavigator'> {}
 
 export const UsersNavigator = ({navigation}: Props) => {
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={{marginRight: 20}}
-          onPress={() =>
-            navigation.dispatch(
-              CommonActions.navigate({
-                name: 'UserScreen',
-                params: {},
-              }),
-            )
-          }>
-          <Text style={{color: 'black'}}>Agregar</Text>
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
-
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
-        headerShadowVisible: false,
+        title: 'Users',
+        headerLeft: () => (
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+            <Icon
+              style={{marginRight: 15}}
+              name="reorder"
+              size={23}
+              color="black"
+            />
+          </TouchableOpacity>
+        ),
         contentStyle: {backgroundColor: 'white'},
       }}>
+      <Stack.Screen name="UsersScreen" component={UsersScreen} />
       <Stack.Screen
-        name="UsersScreen"
-        component={UsersScreen}
-        // options={{title: 'Productos'}}
+        name="UserScreen"
+        component={UserScreen}
+        options={{
+          headerLeft: () => (
+            <TouchableOpacity
+              activeOpacity={0.5}
+              // onPress={() => navigation.goBack()}>
+              onPress={() =>
+                navigation.dispatch(
+                  CommonActions.navigate({
+                    name: 'UsersScreen',
+                    params: {},
+                  }),
+                )
+              }>
+              <Icon
+                style={{marginRight: 15}}
+                name="arrow-back"
+                size={23}
+                color="black"
+              />
+            </TouchableOpacity>
+          ),
+        }}
       />
-      <Stack.Screen name="UserScreen" component={UserScreen} />
     </Stack.Navigator>
   );
 };
