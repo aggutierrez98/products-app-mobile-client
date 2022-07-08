@@ -1,9 +1,10 @@
 import {Picker} from '@react-native-picker/picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   Button,
   Image,
+  RefreshControl,
   // Image,
   ScrollView,
   StyleSheet,
@@ -26,17 +27,10 @@ export const UserScreen = ({
     params: {id: idFromParams = '', name: nameFromParams = ''},
   },
   navigation,
-}: //   navigation,
-
-Props) => {
-  useEffect(() => {
-    navigation.setOptions({
-      title: nameFromParams,
-    });
-  }, [navigation, nameFromParams]);
-
+}: Props) => {
   const {
     loading,
+    refetchUser,
     onChange,
     updateUserFunction,
     tempUri,
@@ -49,7 +43,16 @@ Props) => {
   if (loading) <LoadingScreen />;
 
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={loading}
+          onRefresh={refetchUser}
+          progressViewOffset={10}
+          progressBackgroundColor="white"
+          colors={['black']}
+        />
+      }>
       <View style={styles.container}>
         <View style={componentStyles.avatarContainer}>
           <Image
@@ -97,7 +100,14 @@ Props) => {
           />
         </View>
 
-        <Button title="Guardar" onPress={updateUserFunction} color="#5856d6" />
+        <Button
+          title="Guardar"
+          onPress={async () => {
+            await updateUserFunction();
+            navigation.goBack();
+          }}
+          color="#5856d6"
+        />
       </View>
     </ScrollView>
   );

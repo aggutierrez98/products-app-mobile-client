@@ -6,9 +6,7 @@ import {
 import {ProtectedNavigationParams} from './ProtectedNavigator';
 import {UsersScreen} from '../screens/UsersScreen';
 import {UserScreen} from '../screens/UserScreen';
-import {TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import {CommonActions, DrawerActions} from '@react-navigation/native';
+import {Header} from '../components/Header';
 
 export type UsersStackParams = {
   UsersScreen: undefined;
@@ -17,55 +15,24 @@ export type UsersStackParams = {
 
 const Stack = createNativeStackNavigator<UsersStackParams>();
 
-interface Props
+interface NavProps
   extends NativeStackScreenProps<ProtectedNavigationParams, 'UsersNavigator'> {}
 
-export const UsersNavigator = ({navigation}: Props) => {
+export const UsersNavigator = ({}: NavProps) => {
   return (
     <Stack.Navigator
-      screenOptions={{
-        title: 'Users',
-        headerLeft: () => (
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-            <Icon
-              style={{marginRight: 15}}
-              name="reorder"
-              size={23}
-              color="black"
+      screenOptions={({route: {params, name}}) => {
+        return {
+          header: () => (
+            <Header
+              title={params?.name || 'Users'}
+              backButton={name === 'UserScreen'}
             />
-          </TouchableOpacity>
-        ),
-        contentStyle: {backgroundColor: 'white'},
+          ),
+        };
       }}>
       <Stack.Screen name="UsersScreen" component={UsersScreen} />
-      <Stack.Screen
-        name="UserScreen"
-        component={UserScreen}
-        options={{
-          headerLeft: () => (
-            <TouchableOpacity
-              activeOpacity={0.5}
-              // onPress={() => navigation.goBack()}>
-              onPress={() =>
-                navigation.dispatch(
-                  CommonActions.navigate({
-                    name: 'UsersScreen',
-                    params: {},
-                  }),
-                )
-              }>
-              <Icon
-                style={{marginRight: 15}}
-                name="arrow-back"
-                size={23}
-                color="black"
-              />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+      <Stack.Screen name="UserScreen" component={UserScreen} />
     </Stack.Navigator>
   );
 };

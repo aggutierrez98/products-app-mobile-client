@@ -22,3 +22,27 @@ export const UPDATE_USER = gql`
     }
   }
 `;
+
+export const DEACTIVATE_USER = gql`
+  mutation DeactivateUser($id: ID!) {
+    deleteUser(id: $id) {
+      ... on User {
+        id
+        name
+        email
+        image
+        role {
+          id
+          name
+        }
+        active
+        google
+      }
+      ... on InputError {
+        error {
+          message
+        }
+      }
+    }
+  }
+`;

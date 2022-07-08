@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
+  Alert,
   FlatList,
   RefreshControl,
   StyleSheet,
@@ -8,33 +9,27 @@ import {
   View,
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useQuery} from '@apollo/client';
-import {GET_USERS} from '../graphql/queries';
-import {GetUsersRes} from '../interfaces';
+
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {UsersStackParams} from '../navigator/UsersNavigator';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useUsers} from '../hooks/useUsers';
+import {LoadingScreen} from './LoadingScreen';
 
 interface Props
   extends NativeStackScreenProps<UsersStackParams, 'UsersScreen'> {}
 
 export const UsersScreen = ({navigation}: Props) => {
-  const [refreshing, setRefreshing] = useState(false);
-  const {data, refetch}: GetUsersRes = useQuery(GET_USERS, {
-    fetchPolicy: 'cache-first',
-    variables: {
-      limit: 5,
-      skip: 0,
-    },
-  });
-
-  const users = data?.getUsers.users;
-
-  const loadProductsFromBackend = async () => {
-    setRefreshing(true);
-    refetch();
-    setRefreshing(false);
-  };
+  const {
+    users,
+    refreshing,
+    loading,
+    loadProductsFromBackend,
+    deactivateUserFunc,
+  } = useUsers();
   const {top} = useSafeAreaInsets();
+
+  if (loading) <LoadingScreen />;
 
   return (
     <View
@@ -46,7 +41,7 @@ export const UsersScreen = ({navigation}: Props) => {
       <FlatList
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
+            refreshing={refreshing || loading}
             onRefresh={loadProductsFromBackend}
             progressViewOffset={10}
             progressBackgroundColor="white"
@@ -58,6 +53,11 @@ export const UsersScreen = ({navigation}: Props) => {
         renderItem={({item}) => (
           <TouchableOpacity
             activeOpacity={0.8}
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
             onPress={() => {
               navigation.navigate('UserScreen', {
                 id: item.id,
@@ -65,6 +65,23 @@ export const UsersScreen = ({navigation}: Props) => {
               });
             }}>
             <Text style={styles.productName}>{item.name}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert('Estas seguro', 'Desactivaras el usuario', [
+                  {
+                    text: 'Ok',
+                    onPress: () => {
+                      deactivateUserFunc(item.id);
+                    },
+                  },
+                  {
+                    text: 'Cancelar',
+                    onPress: () => {},
+                  },
+                ]);
+              }}>
+              <Icon name="delete-outline" size={23} color="black" />
+            </TouchableOpacity>
           </TouchableOpacity>
         )}
         ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}

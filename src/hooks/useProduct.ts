@@ -1,4 +1,4 @@
-import {gql, useMutation, useQuery} from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import {useEffect, useState} from 'react';
 import {
   ImagePickerResponse,
@@ -28,11 +28,12 @@ export const useProduct = (id: string, name: string) => {
     id: '',
     category: '',
     name: '',
+    description: '',
     image: '',
     price: '',
   });
 
-  const {data: productData}: GetProductRes = useQuery(GET_PRODUCT, {
+  const {data: productData, refetch}: GetProductRes = useQuery(GET_PRODUCT, {
     variables: {id: String(id) || null},
     skip: !id,
   });
@@ -40,9 +41,15 @@ export const useProduct = (id: string, name: string) => {
   const {data: userData}: CurrentUserRes = useQuery(CURRENT_USER, {
     fetchPolicy: 'cache-only',
   });
-  const [updateProduct] = useMutation(UPDATE_PRODUCT);
-  const [createProduct] = useMutation(CREATE_PRODUCT);
-  const [updateImage] = useMutation(UPDATE_IMAGE_CLOUDINARY);
+  const [createProduct, {loading: loadingCreate}] = useMutation(CREATE_PRODUCT);
+  const [updateProduct, {loading: loadingUpdate}] = useMutation(UPDATE_PRODUCT);
+  const [updateImage, {loading: loadingUpdateImage}] = useMutation(
+    UPDATE_IMAGE_CLOUDINARY,
+  );
+
+  const refetchProduct = () => {
+    refetch();
+  };
 
   const productFromApi = productData?.getProduct;
   const categories = categoriesData?.getCategories.categories;
@@ -54,6 +61,7 @@ export const useProduct = (id: string, name: string) => {
           product: {
             id: product.id,
             category: product.category,
+            description: product.description,
             name: product.name,
             price: Number(product.price),
           },
@@ -88,6 +96,7 @@ export const useProduct = (id: string, name: string) => {
           product: {
             category: product.category,
             name: product.name,
+            description: product.description,
             price: Number(product.price),
             user: userData?.currentUser?.id,
           },
@@ -95,55 +104,19 @@ export const useProduct = (id: string, name: string) => {
         onError: error => {
           console.log({error});
         },
-        update: (cache, {data: dataOfProduct}) => {
+        update: (cache, {data: newProductData}) => {
           cache.modify({
             fields: {
-              getProducts(oldProductData) {
-                const newProductRef = cache.writeFragment({
-                  data: dataOfProduct.createProduct,
-                  fragment: gql`
-                    fragment _ on Product {
-                      id
-                      name
-                      user {
-                        id
-                        name
-                        email
-                        image
-                      }
-                      active
-                    }
-                  `,
-                });
+              getProducts(oldProductsData) {
+                if (newProductData.createProduct.error) return oldProductsData;
+
                 return {
-                  ...oldProductData,
-                  products: [...oldProductData.products, newProductRef],
+                  ...oldProductsData,
+                  products: [...oldProductsData.products, {...newProductData}],
                 };
               },
             },
           });
-          // // cache.updateQuery(
-          // //   {
-          // //     query: GET_PRODUCTS,
-          // //     variables: {
-          // //       limit: 5,
-          // //       skip: 0,
-          // //     },
-          // //   },
-          // //   datensio => {
-          // //     console.log({datensio});
-
-          // //     const oldGetProducts = datensio?.oldGetProducts;
-          // //     const {products = []} = oldGetProducts;
-
-          // //     return {
-          // //       getProducts: {
-          // //         ...oldGetProducts,
-          // //         products: [...products, dataOfProduct],
-          // //       },
-          // //     };
-          // //   },
-          // // );
         },
       });
     }
@@ -226,6 +199,7 @@ export const useProduct = (id: string, name: string) => {
       image: productFromApi?.image || '',
       price: String(productFromApi?.price || ''),
       name: productFromApi?.name || name,
+      description: productFromApi?.description || '',
     });
   }, [id, name, setFormValues, productFromApi]);
 
@@ -233,6 +207,7 @@ export const useProduct = (id: string, name: string) => {
     product,
     categories,
     tempUri,
+    loading: loadingCreate || loadingUpdate || loadingUpdateImage,
     updateProduct,
     createProduct,
     setFormValues,
@@ -240,5 +215,6 @@ export const useProduct = (id: string, name: string) => {
     saveOrUpdate,
     takePhoto,
     takePhotoFromGallery,
+    refetchProduct,
   };
 };

@@ -15,14 +15,25 @@ import {useForm} from './useForm';
 
 export const useUser = (id: string, name: string) => {
   const [tempUri, setTempUri] = useState<string>();
-  const {data: userData, loading}: GetUserRes = useQuery(GET_USER, {
+  const {
+    data: userData,
+    loading: loadingGet,
+    refetch,
+  }: GetUserRes = useQuery(GET_USER, {
     variables: {id},
   });
-  const [updateUser] = useMutation(UPDATE_USER);
+  const [updateUser, {loading: loadingUpdate}] = useMutation(UPDATE_USER);
+  const [updateImage, {loading: loadingUpdateImage}] = useMutation(
+    UPDATE_IMAGE_CLOUDINARY,
+  );
+
   const userFromApi = userData?.getUser;
-  const [updateImage] = useMutation(UPDATE_IMAGE_CLOUDINARY);
   const {data: rolesData}: GetRolesRes = useQuery(GET_ROLES);
   const roles = rolesData?.getRoles.roles;
+
+  const refetchUser = () => {
+    refetch();
+  };
 
   const {
     form: user,
@@ -46,8 +57,8 @@ export const useUser = (id: string, name: string) => {
     });
   }, [id, name, setFormValues, userFromApi]);
 
-  const updateUserFunction = () => {
-    updateUser({
+  const updateUserFunction = async () => {
+    await updateUser({
       variables: {
         user: {
           id,
@@ -135,10 +146,11 @@ export const useUser = (id: string, name: string) => {
     tempUri,
     user,
     roles,
-    loading,
+    loading: loadingUpdate || loadingUpdateImage || loadingGet,
     updateUserFunction,
     onChange,
     takePhoto,
     takePhotoFromGallery,
+    refetchUser,
   };
 };

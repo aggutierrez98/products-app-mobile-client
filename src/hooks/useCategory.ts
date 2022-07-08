@@ -1,8 +1,9 @@
 import {useMutation, useQuery} from '@apollo/client';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {
   CREATE_CATEGORY,
   DELETE_CATEGORY,
+  UPDATE_CATEGORY,
 } from '../graphql/mutations/categories';
 import {GET_CATEGORIES} from '../graphql/queries';
 import {CURRENT_USER} from '../graphql/queries/auth';
@@ -10,15 +11,39 @@ import {
   GetCategoriesRes,
   GetCategoriesResponse,
   CurrentUserRes,
+  Category,
 } from '../interfaces';
 
-export const useCategory = (closeModal: () => void) => {
+export const useCategory = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const [newCategoryName, setNewCategoryName] = useState('');
+  const [categoryName, setCategoryName] = useState('');
   const [error, setError] = useState(null);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalData, setModalData] = useState<{
+    title: string | null;
+    option: 'Add' | 'Edit';
+    categoryData?: {id: string; name: string};
+  }>({title: '', option: 'Add'});
+
+  const openModal = useCallback(
+    (
+      title: string,
+      option: 'Add' | 'Edit',
+      categoryData?: {id: string; name: string},
+    ) => {
+      setModalData({title, option, categoryData});
+      setModalVisible((prevVisibility: boolean) => !prevVisibility);
+      if (categoryData?.name) setCategoryName(categoryData?.name);
+      else setCategoryName('');
+    },
+    [],
+  );
+  const closeModal = () => setModalVisible(false);
 
   const {
     data: categoriesData,
+    loading: loadingGet,
     refetch,
     reobserve,
   }: GetCategoriesRes = useQuery(GET_CATEGORIES, {
@@ -29,7 +54,10 @@ export const useCategory = (closeModal: () => void) => {
     },
   });
   const {data: userData}: CurrentUserRes = useQuery(CURRENT_USER);
-  const [createCategory, {data}] = useMutation(CREATE_CATEGORY);
+  const [createCategory, {data, loading: loadingCreate}] =
+    useMutation(CREATE_CATEGORY);
+  const [updateCategory, {loading: loadingUpdate}] =
+    useMutation(UPDATE_CATEGORY);
 
   useEffect(() => {
     if (data?.createCategory.error) {
@@ -39,7 +67,8 @@ export const useCategory = (closeModal: () => void) => {
     }
   }, [data?.createCategory.error]);
 
-  const [deleteCategory] = useMutation(DELETE_CATEGORY);
+  const [deleteCategory, {loading: loadingDelete}] =
+    useMutation(DELETE_CATEGORY);
 
   const categories = (categoriesData as GetCategoriesResponse | undefined)
     ?.getCategories.categories;
@@ -50,8 +79,81 @@ export const useCategory = (closeModal: () => void) => {
     setRefreshing(false);
   };
 
-  const handleNameChange = (value: string) => {
-    setNewCategoryName(value);
+  const handleNameChange = useCallback((value: string) => {
+    setCategoryName(value);
+  }, []);
+
+  const saveOrUpdateCategory = async (id?: string) => {
+    if (id) {
+      closeModal();
+      await updateCategory({
+        variables: {
+          category: {
+            id,
+            name: categoryName,
+            user: userData?.currentUser?.id,
+          },
+        },
+        onError: err => {
+          console.log({err});
+        },
+        update: (cache, {data: newCategoryData}) => {
+          cache.modify({
+            fields: {
+              getCategories(oldCategoriesData) {
+                const newCategories = oldCategoriesData.categories.map(
+                  (oldCategory: Category) => {
+                    if (oldCategory.id === newCategoryData.id) {
+                      return newCategoryData;
+                    } else return oldCategory;
+                  },
+                );
+
+                return {
+                  ...oldCategoriesData,
+                  categories: newCategories,
+                };
+              },
+            },
+          });
+        },
+      });
+    } else {
+      closeModal();
+
+      await createCategory({
+        variables: {
+          category: {
+            name: categoryName,
+            user: userData?.currentUser?.id,
+          },
+        },
+        onError: err => {
+          console.log({err});
+        },
+        update: (cache, {data: newCategoryData}) => {
+          cache.modify({
+            fields: {
+              getCategories(oldCategoriesData) {
+                if (newCategoryData.createCategory.error)
+                  return oldCategoriesData;
+
+                return {
+                  ...oldCategoriesData,
+                  categories: [
+                    ...oldCategoriesData.categories,
+                    {...newCategoryData},
+                  ],
+                };
+              },
+            },
+          });
+        },
+      });
+    }
+
+    setCategoryName('');
+    reobserve();
   };
 
   const deleteCategoryHandler = (id: string) => {
@@ -73,52 +175,22 @@ export const useCategory = (closeModal: () => void) => {
         cache.gc();
       },
     });
-  };
-
-  const createCategoryHandler = async () => {
-    await createCategory({
-      variables: {
-        category: {
-          name: newCategoryName,
-          user: userData?.currentUser?.id,
-        },
-      },
-      onError: err => {
-        console.log({err});
-      },
-      update: (cache, {data: newCategoryData}) => {
-        cache.modify({
-          fields: {
-            getCategories(oldCategoriesData) {
-              if (newCategoryData.createCategory.error)
-                return oldCategoriesData;
-
-              return {
-                ...oldCategoriesData,
-                categories: [
-                  ...oldCategoriesData.categories,
-                  {...newCategoryData},
-                ],
-              };
-            },
-          },
-        });
-      },
-    });
-
     closeModal();
-    setNewCategoryName('');
-    reobserve();
   };
 
   return {
-    refreshing,
     categories,
+    refreshing,
+    loading: loadingGet || loadingCreate || loadingUpdate || loadingDelete,
     inputError: error,
-    createCategoryHandler,
+    categoryName,
+    modalVisible,
+    modalData,
+    saveOrUpdateCategory,
     deleteCategoryHandler,
     loadProductsFromBackend,
-    newCategoryName,
     handleNameChange,
+    openModal,
+    closeModal,
   };
 };

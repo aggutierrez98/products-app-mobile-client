@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
+  Alert,
   FlatList,
   RefreshControl,
   StyleSheet,
@@ -10,31 +11,21 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useQuery} from '@apollo/client';
-import {GET_PRODUCTS} from '../graphql/queries';
-import {GetProductsRes} from '../interfaces';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useProducts} from '../hooks/useProducts';
 
 interface Props
   extends NativeStackScreenProps<ProductsStackParams, 'ProductsScreen'> {}
 
 export const ProductsScreen = ({navigation}: Props) => {
-  const [refreshing, setRefreshing] = useState(false);
-  const {data, refetch}: GetProductsRes = useQuery(GET_PRODUCTS, {
-    fetchPolicy: 'cache-first',
-    variables: {
-      limit: 5,
-      skip: 0,
-    },
-  });
-
-  const products = data?.getProducts.products;
-
-  const loadProductsFromBackend = async () => {
-    setRefreshing(true);
-    refetch();
-    setRefreshing(false);
-  };
   const {top} = useSafeAreaInsets();
+  const {
+    products,
+    refreshing,
+    loading,
+    deleteProductFunc,
+    loadProductsFromBackend,
+  } = useProducts();
 
   return (
     <View
@@ -47,7 +38,7 @@ export const ProductsScreen = ({navigation}: Props) => {
         style={{marginTop: 10}}
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
+            refreshing={refreshing || loading}
             onRefresh={loadProductsFromBackend}
             progressViewOffset={10}
             progressBackgroundColor="white"
@@ -59,6 +50,11 @@ export const ProductsScreen = ({navigation}: Props) => {
         renderItem={({item}) => (
           <TouchableOpacity
             activeOpacity={0.8}
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
             onPress={() => {
               navigation.navigate('ProductScreen', {
                 id: item.id,
@@ -66,6 +62,27 @@ export const ProductsScreen = ({navigation}: Props) => {
               });
             }}>
             <Text style={styles.productName}>{item.name}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert(
+                  'Estas seguro',
+                  'Eliminaras el producto y no se podra recuperar',
+                  [
+                    {
+                      text: 'Ok',
+                      onPress: () => {
+                        deleteProductFunc(item.id);
+                      },
+                    },
+                    {
+                      text: 'Cancelar',
+                      onPress: () => {},
+                    },
+                  ],
+                );
+              }}>
+              <Icon name="delete-outline" size={23} color="black" />
+            </TouchableOpacity>
           </TouchableOpacity>
         )}
         ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}

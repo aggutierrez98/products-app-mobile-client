@@ -192,3 +192,53 @@ export const UPDATE_IMAGE = gql`
     }
   }
 `;
+
+export const DELETE_PRODUCT = gql`
+  mutation DeleteProduct($id: ID!) {
+    deleteProduct(id: $id) {
+      ... on Product {
+        id
+        name
+        description
+        image
+        price
+        available
+        active
+        user {
+          id
+          name
+          email
+          image
+          role {
+            id
+            name
+          }
+          active
+          google
+        }
+        category {
+          id
+          name
+          user {
+            id
+            name
+            email
+            image
+            role {
+              id
+              name
+            }
+            active
+            google
+          }
+          active
+        }
+      }
+      ... on InputError {
+        error {
+          message
+        }
+      }
+    }
+  }
+`;

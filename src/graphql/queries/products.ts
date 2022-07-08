@@ -5,7 +5,33 @@ export const GET_PRODUCTS = gql`
       ... on GetProductsResults {
         products {
           name
+          description
+          price
+          available
           id
+          active
+          user {
+            id
+            name
+            role {
+              id
+              name
+            }
+          }
+          category {
+            id
+            name
+            active
+            user {
+              id
+              name
+              email
+              role {
+                id
+                name
+              }
+            }
+          }
         }
         count
       }

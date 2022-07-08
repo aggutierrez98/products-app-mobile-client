@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   Alert,
   FlatList,
@@ -15,26 +15,43 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useCategory} from '../hooks/useCategory';
 import {categoriesStyles} from '../theme/categoriesTheme';
 import {ProtectedNavigationParams} from '../navigator/ProtectedNavigator';
+import {Header} from '../components/Header';
 
 interface Props
   extends DrawerScreenProps<ProtectedNavigationParams, 'CategoriesScreen'> {}
 
 export const CategoriesScreen = ({navigation}: Props) => {
   const {top} = useSafeAreaInsets();
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const closeModal = () => setModalVisible(false);
 
   const {
     categories,
-    newCategoryName,
     inputError,
+    loading,
     refreshing,
-    createCategoryHandler,
+    categoryName,
+    modalVisible,
+    modalData,
+    saveOrUpdateCategory,
     deleteCategoryHandler,
     loadProductsFromBackend,
     handleNameChange,
-  } = useCategory(closeModal);
+    openModal,
+    closeModal,
+  } = useCategory();
+
+  useEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <Header
+          title="Categories"
+          text="Add"
+          onPress={() => {
+            openModal('Add', 'Add');
+          }}
+        />
+      ),
+    });
+  }, [navigation, openModal]);
 
   useEffect(() => {
     if (inputError) {
@@ -45,21 +62,6 @@ export const CategoriesScreen = ({navigation}: Props) => {
       ]);
     }
   }, [inputError]);
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={{marginRight: 15}}
-          onPress={() =>
-            setModalVisible((prevVisibility: boolean) => !prevVisibility)
-          }>
-          <Text style={{color: 'black'}}>Agregar</Text>
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
 
   return (
     <>
@@ -73,7 +75,7 @@ export const CategoriesScreen = ({navigation}: Props) => {
           style={{marginTop: 10}}
           refreshControl={
             <RefreshControl
-              refreshing={refreshing}
+              refreshing={refreshing || loading}
               onRefresh={loadProductsFromBackend}
               progressViewOffset={10}
               progressBackgroundColor="white"
@@ -90,27 +92,40 @@ export const CategoriesScreen = ({navigation}: Props) => {
                 justifyContent: 'space-between',
               }}>
               <Text style={categoriesStyles.categoryName}>{item.name}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  Alert.alert(
-                    'Estas seguro',
-                    'Eliminaras la categoria y no se podra recuperar',
-                    [
-                      {
-                        text: 'Ok',
-                        onPress: () => {
-                          deleteCategoryHandler(item.id);
-                        },
-                      },
-                      {
-                        text: 'Cancelar',
-                        onPress: () => {},
-                      },
-                    ],
-                  );
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '15%',
+                  justifyContent: 'space-between',
                 }}>
-                <Icon name="delete-outline" size={23} color="black" />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    openModal('Edit', 'Edit', item);
+                  }}>
+                  <Icon name="edit" size={23} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    Alert.alert(
+                      'Estas seguro',
+                      'Eliminaras la categoria y no se podra recuperar',
+                      [
+                        {
+                          text: 'Ok',
+                          onPress: () => {
+                            deleteCategoryHandler(item.id);
+                          },
+                        },
+                        {
+                          text: 'Cancelar',
+                          onPress: () => {},
+                        },
+                      ],
+                    );
+                  }}>
+                  <Icon name="delete-outline" size={23} color="black" />
+                </TouchableOpacity>
+              </View>
             </View>
           )}
           ItemSeparatorComponent={() => (
@@ -118,27 +133,23 @@ export const CategoriesScreen = ({navigation}: Props) => {
           )}
         />
       </View>
-      <MyModal
-        visible={modalVisible}
-        dismiss={() => {
-          setModalVisible(false);
-        }}>
+      <MyModal visible={modalVisible} dismiss={closeModal}>
         <View style={categoriesStyles.modalContent}>
-          <Text style={categoriesStyles.label}>
-            Nombre de la nueva categoria
-          </Text>
+          <Text style={categoriesStyles.label}>{modalData.title}</Text>
           <TextInput
             placeholder="Categoria"
             style={categoriesStyles.textInput}
             placeholderTextColor="grey"
-            value={newCategoryName}
+            value={categoryName}
             onChangeText={handleNameChange}
           />
           <TouchableOpacity
             activeOpacity={0.8}
             style={[categoriesStyles.button, categoriesStyles.buttonSave]}
-            onPress={() => createCategoryHandler()}>
-            <Text style={categoriesStyles.textStyle}>Guardar</Text>
+            onPress={() => {
+              saveOrUpdateCategory(modalData.categoryData?.id);
+            }}>
+            <Text style={categoriesStyles.textStyle}>Save</Text>
           </TouchableOpacity>
         </View>
       </MyModal>
