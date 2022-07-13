@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {Background} from '../components/Background';
 import Text from '../components/CustomText';
-import {WhiteLogo} from '../components/WhiteLogo';
+import {Logo} from '../components/Logo';
 import {useAuth} from '../hooks/useAuth';
 import {loginStyles} from '../theme/loginTheme';
 import {Loading} from './Loading';
@@ -51,7 +51,7 @@ export const RegisterScreen = ({navigation}: Props) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <Background>
           <View style={loginStyles.formContainer}>
-            <WhiteLogo />
+            <Logo />
             <Text style={loginStyles.title}>Registro</Text>
             <Text style={loginStyles.label}>Nombre</Text>
             <TextInput

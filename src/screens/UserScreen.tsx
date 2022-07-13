@@ -10,6 +10,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import {FadeInImage} from '../components/FadeInImage';
 import {componentStyles} from '../components/styles';
@@ -100,16 +101,18 @@ export const UserScreen = ({
             onChangeText={value => onChange(value, 'name')}
           />
           <Text style={styles.label}>Seleccione el rol</Text>
-          <Picker
-            selectedValue={user?.role}
-            style={styles.pickerStyle}
-            onValueChange={itemValue => {
-              onChange(itemValue, 'role');
-            }}>
-            {roles?.map(role => (
-              <Picker.Item label={role.name} value={role.id} key={role.id} />
-            ))}
-          </Picker>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={user?.role}
+              style={styles.pickerStyle}
+              onValueChange={itemValue => {
+                onChange(itemValue, 'role');
+              }}>
+              {roles?.map(role => (
+                <Picker.Item label={role.name} value={role.id} key={role.id} />
+              ))}
+            </Picker>
+          </View>
 
           <TouchableOpacity
             activeOpacity={0.8}
@@ -141,12 +144,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 15,
   },
+  pickerContainer: {
+    borderRadius: 25,
+    borderColor: '#205375',
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingLeft: 5,
+  },
   pickerStyle: {
-    backgroundColor: '#205375',
-    marginBottom: 30,
+    fontSize: 18,
   },
   buttonStyle: {
+    marginVertical: 20,
     backgroundColor: '#F66B0E',
+    // backgroundColor: '#205375',
     width: '95%',
     alignSelf: 'center',
     justifyContent: 'center',

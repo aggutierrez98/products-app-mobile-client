@@ -28,8 +28,6 @@ export const useAuth = () => {
     }
   }, [client, refetch, user]);
 
-  console.log({userLoading, loadingFromRefetch});
-
   const [error, setError] = useState(null);
   const {name, email, password, onChange} = useForm({
     name: '',

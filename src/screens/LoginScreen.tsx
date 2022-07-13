@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import {Background} from '../components/Background';
-import {WhiteLogo} from '../components/WhiteLogo';
+import {Logo} from '../components/Logo';
 import {loginStyles} from '../theme/loginTheme';
 import {Loading} from './Loading';
 import {useAuth} from '../hooks/useAuth';
@@ -43,7 +43,7 @@ export const LoginScreen = ({navigation}: Props) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <Background>
           <View style={loginStyles.formContainer}>
-            <WhiteLogo />
+            <Logo />
             <Text style={loginStyles.title}>Login</Text>
             <Text style={loginStyles.label}>Email</Text>
             <TextInput

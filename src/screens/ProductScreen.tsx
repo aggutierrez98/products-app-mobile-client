@@ -121,23 +121,25 @@ export const ProductScreen = ({
           />
           <Text style={styles.label}>Select category</Text>
 
-          <Picker
-            selectedValue={product?.category}
-            style={styles.pickerStyle}
-            dropdownIconColor="#EFEFEF"
-            dropdownIconRippleColor="#F66B0E"
-            onValueChange={itemValue => {
-              onChange(itemValue, 'category');
-            }}>
-            {categories?.map(category => (
-              <Picker.Item
-                style={{color: '#EFEFEF'}}
-                label={category.name}
-                value={category.id}
-                key={category.id}
-              />
-            ))}
-          </Picker>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={product?.category}
+              style={styles.pickerStyle}
+              dropdownIconColor="#EFEFEF"
+              dropdownIconRippleColor="#F66B0E"
+              onValueChange={itemValue => {
+                onChange(itemValue, 'category');
+              }}>
+              {categories?.map(category => (
+                <Picker.Item
+                  style={{color: '#EFEFEF'}}
+                  label={category.name}
+                  value={category.id}
+                  key={category.id}
+                />
+              ))}
+            </Picker>
+          </View>
 
           <TouchableOpacity
             activeOpacity={0.8}
@@ -146,7 +148,7 @@ export const ProductScreen = ({
               await saveOrUpdate();
               navigation.goBack();
             }}>
-            <Text style={{fontSize: 20}}>Save</Text>
+            <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
         </View>
 
@@ -166,20 +168,29 @@ export const ProductScreen = ({
 const styles = StyleSheet.create({
   container: {flex: 1, marginVertical: 20, marginHorizontal: 20},
   label: {fontSize: 18, marginBottom: 5},
+  pickerContainer: {
+    borderRadius: 25,
+    borderColor: '#205375',
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingLeft: 5,
+  },
   pickerStyle: {
     fontSize: 18,
-    marginBottom: 20,
-    backgroundColor: '#205375',
-    // borderRadius: 10,
   },
   buttonStyle: {
+    marginVertical: 20,
     backgroundColor: '#F66B0E',
+    // backgroundColor: '#205375',
     width: '90%',
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
     height: 40,
+  },
+  buttonText: {
+    fontSize: 20,
   },
   textInput: {
     color: '#EFEFEF',
