@@ -1,7 +1,7 @@
 import {useMutation, useQuery} from '@apollo/client';
 import {useEffect, useState} from 'react';
 import {
-  ImagePickerResponse,
+  Asset,
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker';
@@ -19,7 +19,13 @@ import {
 } from '../interfaces';
 
 export const useProduct = (id: string, name: string) => {
-  const [tempUri, setTempUri] = useState<string>();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const closeModal = () => setModalVisible(false);
+  const openModal = () => setModalVisible(true);
+
+  const [tempImage, setTempImage] = useState<Asset>();
+
   const {
     form: product,
     onChange,
@@ -33,7 +39,11 @@ export const useProduct = (id: string, name: string) => {
     price: '',
   });
 
-  const {data: productData, refetch}: GetProductRes = useQuery(GET_PRODUCT, {
+  const {
+    data: productData,
+    refetch,
+    loading: loadingGet,
+  }: GetProductRes = useQuery(GET_PRODUCT, {
     variables: {id: String(id) || null},
     skip: !id,
   });
@@ -47,8 +57,10 @@ export const useProduct = (id: string, name: string) => {
     UPDATE_IMAGE_CLOUDINARY,
   );
 
-  const refetchProduct = () => {
-    refetch();
+  const refetchProduct = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
   };
 
   const productFromApi = productData?.getProduct;
@@ -90,6 +102,8 @@ export const useProduct = (id: string, name: string) => {
           });
         },
       });
+
+      if (tempImage) uploadImage(tempImage);
     } else {
       await createProduct({
         variables: {
@@ -122,11 +136,11 @@ export const useProduct = (id: string, name: string) => {
     }
   };
 
-  const uploadImage = async (data: ImagePickerResponse) => {
+  const uploadImage = async (tempImageData: Asset) => {
     const fileToUpload = new ReactNativeFile({
-      uri: data.assets![0].uri!,
-      type: data.assets![0].type,
-      name: data.assets![0].fileName,
+      uri: tempImageData.uri!,
+      type: tempImageData.type,
+      name: tempImageData.fileName,
     });
     updateImage({
       variables: {
@@ -170,8 +184,8 @@ export const useProduct = (id: string, name: string) => {
         if (resp.didCancel) return;
         if (!resp.assets || resp.assets.length === 0) return;
 
-        setTempUri(resp.assets[0].uri);
-        uploadImage(resp);
+        setTempImage(resp.assets[0]);
+        closeModal();
       },
     );
   };
@@ -186,8 +200,8 @@ export const useProduct = (id: string, name: string) => {
         if (resp.didCancel) return;
         if (!resp.assets || resp.assets.length === 0) return;
 
-        setTempUri(resp.assets[0].uri);
-        uploadImage(resp);
+        setTempImage(resp.assets[0]);
+        closeModal();
       },
     );
   };
@@ -206,8 +220,13 @@ export const useProduct = (id: string, name: string) => {
   return {
     product,
     categories,
-    tempUri,
-    loading: loadingCreate || loadingUpdate || loadingUpdateImage,
+    tempImage,
+    loading: loadingGet,
+    loadingMutation: loadingCreate || loadingUpdate || loadingUpdateImage,
+    refreshing,
+    modalVisible,
+    closeModal,
+    openModal,
     updateProduct,
     createProduct,
     setFormValues,

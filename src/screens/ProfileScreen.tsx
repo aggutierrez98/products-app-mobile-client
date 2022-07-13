@@ -1,10 +1,11 @@
 import {QueryResult, useQuery} from '@apollo/client';
 import React from 'react';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {CURRENT_USER} from '../graphql/queries/auth';
 import {CurrentUserResponse} from '../interfaces/user';
 import {componentStyles} from '../components/styles';
-import {DEFAULT_IMAGE} from './UserScreen';
+import {FadeInImage} from '../components/FadeInImage';
+import Text from '../components/CustomText';
 
 export const ProfileScreen = () => {
   const {data: userData}: QueryResult<CurrentUserResponse> =
@@ -15,44 +16,47 @@ export const ProfileScreen = () => {
     <ScrollView>
       <View style={styles.container}>
         <View style={componentStyles.avatarContainer}>
-          <Image
-            source={{
-              uri: user?.image || DEFAULT_IMAGE,
-            }}
+          <FadeInImage
+            source={
+              user?.image
+                ? {
+                    uri: user?.image,
+                  }
+                : require('../assets/avatar-placeholder.png')
+            }
             style={componentStyles.avatarInProtected}
           />
         </View>
-
         <Text
           style={{
-            color: 'black',
             fontSize: 20,
             fontWeight: 'bold',
             marginTop: 15,
+            color: '#F66B0E',
           }}>
           EMAIL:
         </Text>
-        <Text style={{color: 'black', fontSize: 15}}>{user?.email}</Text>
+        <Text style={{fontSize: 15}}>{user?.email}</Text>
         <Text
           style={{
-            color: 'black',
             fontSize: 20,
             fontWeight: 'bold',
             marginTop: 15,
+            color: '#F66B0E',
           }}>
           NAME:
         </Text>
-        <Text style={{color: 'black'}}>{user?.name}</Text>
+        <Text style={{}}>{user?.name}</Text>
         <Text
           style={{
-            color: 'black',
             fontSize: 20,
             fontWeight: 'bold',
             marginTop: 15,
+            color: '#F66B0E',
           }}>
           ROLE:
         </Text>
-        <Text style={{color: 'black'}}>{user?.role.name}</Text>
+        <Text style={{}}>{user?.role.name}</Text>
       </View>
     </ScrollView>
   );
@@ -67,6 +71,5 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     marginBottom: 20,
-    color: 'black',
   },
 });

@@ -1,12 +1,20 @@
 // Modal.js
 import React from 'react';
-import {TouchableWithoutFeedback, StyleSheet, Modal, View} from 'react-native';
+import {
+  TouchableWithoutFeedback,
+  StyleSheet,
+  Modal,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 interface Props {
   visible: boolean;
   children: Document | Document[];
   transparent?: boolean;
   animationType?: 'fade' | 'none' | 'slide' | undefined;
+  overlayStyles?: ViewStyle;
+  modalStyles?: ViewStyle;
   dismiss: () => void;
 }
 
@@ -15,6 +23,8 @@ export const MyModal = ({
   children,
   transparent = true,
   animationType = 'fade',
+  overlayStyles = {},
+  modalStyles = {},
   dismiss,
 }: Props) => {
   return (
@@ -25,27 +35,29 @@ export const MyModal = ({
         onRequestClose={dismiss}
         animationType={animationType}>
         <TouchableWithoutFeedback onPress={dismiss}>
-          <View style={styles.modalOverlay} />
+          <View style={{...defaultStyles.modalOverlay, ...overlayStyles}} />
         </TouchableWithoutFeedback>
-
-        <View style={styles.modalContent}>{children}</View>
+        <View style={{...defaultStyles.modalContent, ...modalStyles}}>
+          {children}
+        </View>
       </Modal>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const defaultStyles = StyleSheet.create({
   modalContent: {
     flex: 1,
     justifyContent: 'center',
-    margin: '10%',
+    alignSelf: 'center',
   },
   modalOverlay: {
+    flexDirection: 'column',
     position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
 });

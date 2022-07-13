@@ -181,7 +181,8 @@ export const useCategory = () => {
   return {
     categories,
     refreshing,
-    loading: loadingGet || loadingCreate || loadingUpdate || loadingDelete,
+    loading: loadingGet,
+    loadingMutation: loadingCreate || loadingUpdate || loadingDelete,
     inputError: error,
     categoryName,
     modalVisible,

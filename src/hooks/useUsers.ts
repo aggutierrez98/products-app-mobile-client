@@ -1,13 +1,16 @@
 import {useMutation, useQuery} from '@apollo/client';
-import {useState} from 'react';
-import {DEACTIVATE_USER} from '../graphql/mutations/users';
+import {useMemo, useState} from 'react';
+import {ACTIVATE_USER, DEACTIVATE_USER} from '../graphql/mutations/users';
 import {GET_USERS} from '../graphql/queries';
 import {GetUsersRes} from '../interfaces';
 
 export const useUsers = () => {
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState(0);
+
   const [deactivateUser, {loading: loadingDeactivate}] =
     useMutation(DEACTIVATE_USER);
+  const [activateUser, {loading: loadingActivate}] = useMutation(ACTIVATE_USER);
   const {
     data,
     refetch,
@@ -21,7 +24,20 @@ export const useUsers = () => {
     },
   });
 
-  const users = data?.getUsers.users;
+  const options = useMemo(
+    () => [
+      {name: 'Actives', value: 0},
+      {name: 'Inactives', value: 1},
+    ],
+    [],
+  );
+
+  const changeFilter = (option: number) => setSelectedFilter(option);
+
+  const shouldActive = selectedFilter === 0;
+  const users = data?.getUsers?.users?.filter(
+    user => user.active === shouldActive,
+  );
 
   const loadProductsFromBackend = async () => {
     setRefreshing(true);
@@ -38,14 +54,53 @@ export const useUsers = () => {
       onError: err => {
         console.log({err});
       },
-      update: (cache, {data: userToDeactivate}) => {
-        const idToDelete = userToDeactivate.deleteUser.id;
-        const normalizedId = cache.identify({
-          id: idToDelete,
-          __typename: 'User',
+      update: (cache, {data: newUserData}) => {
+        cache.modify({
+          fields: {
+            getUsers(oldGetUsersData) {
+              const newUsers = oldGetUsersData.users.map((oldUser: any) => {
+                if (oldUser.id === newUserData.id) {
+                  return newUserData;
+                } else return oldUser;
+              });
+
+              return {
+                ...oldGetUsersData,
+                users: newUsers,
+              };
+            },
+          },
         });
-        cache.evict({id: normalizedId});
-        cache.gc();
+      },
+    });
+  };
+
+  const activateUserFunc = async (id: string) => {
+    activateUser({
+      variables: {id},
+      onCompleted: () => {
+        reobserve();
+      },
+      onError: err => {
+        console.log({err});
+      },
+      update: (cache, {data: newUserData}) => {
+        cache.modify({
+          fields: {
+            getUsers(oldGetUsersData) {
+              const newUsers = oldGetUsersData.users.map((oldUser: any) => {
+                if (oldUser.id === newUserData.id) {
+                  return newUserData;
+                } else return oldUser;
+              });
+
+              return {
+                ...oldGetUsersData,
+                users: newUsers,
+              };
+            },
+          },
+        });
       },
     });
   };
@@ -53,8 +108,12 @@ export const useUsers = () => {
   return {
     users,
     refreshing,
-    loading: loadingDeactivate || loadingGet,
+    options,
+    loading: loadingDeactivate || loadingActivate || loadingGet,
+    selectedFilter,
     loadProductsFromBackend,
     deactivateUserFunc,
+    activateUserFunc,
+    changeFilter,
   };
 };

@@ -2,23 +2,23 @@ import {Picker} from '@react-native-picker/picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
 import {
-  Button,
-  Image,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
   RefreshControl,
-  // Image,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
-  View,
+  TouchableOpacity,
 } from 'react-native';
+import {FadeInImage} from '../components/FadeInImage';
 import {componentStyles} from '../components/styles';
 import {useUser} from '../hooks/useUser';
 import {UsersStackParams} from '../navigator/UsersNavigator';
-import {LoadingScreen} from './LoadingScreen';
+import {Loading} from './Loading';
+import Text from '../components/CustomText';
+import {ModalEditPhoto} from '../components/ModalEditPhoto';
 
-export const DEFAULT_IMAGE =
-  'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541';
 interface Props
   extends NativeStackScreenProps<UsersStackParams, 'UserScreen'> {}
 
@@ -30,99 +30,136 @@ export const UserScreen = ({
 }: Props) => {
   const {
     loading,
+    loadingMutation,
+    refreshing,
+    modalVisible,
+    tempImage,
+    user,
+    roles,
+    openModal,
+    closeModal,
     refetchUser,
     onChange,
     updateUserFunction,
-    tempUri,
-    user,
-    roles,
     takePhoto,
     takePhotoFromGallery,
   } = useUser(idFromParams, nameFromParams);
 
-  if (loading) <LoadingScreen />;
-
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl
-          refreshing={loading}
-          onRefresh={refetchUser}
-          progressViewOffset={10}
-          progressBackgroundColor="white"
-          colors={['black']}
-        />
-      }>
-      <View style={styles.container}>
-        <View style={componentStyles.avatarContainer}>
-          <Image
-            source={{
-              uri: user?.image || tempUri || DEFAULT_IMAGE,
-            }}
-            style={componentStyles.avatar}
+    <>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refetchUser}
+            progressViewOffset={10}
+            progressBackgroundColor="#205375"
+            colors={['#EFEFEF', '#F66B0E']}
           />
-        </View>
-        <Text style={styles.label}>Email: {user.email}</Text>
+        }>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color="#EFEFEF"
+              style={{
+                height: 280,
+              }}
+            />
+          ) : (
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={componentStyles.avatarContainer}
+              onPress={() => {
+                openModal();
+              }}>
+              <FadeInImage
+                source={
+                  tempImage || user?.image
+                    ? {
+                        uri: tempImage?.uri || user?.image,
+                      }
+                    : require('../assets/avatar-placeholder.png')
+                }
+                style={componentStyles.avatar}
+              />
+            </TouchableOpacity>
+          )}
 
-        <Text style={styles.label}>Nombre del usuario</Text>
-        <TextInput
-          placeholder="Usuario"
-          style={styles.textInput}
-          placeholderTextColor="grey"
-          value={user?.name || nameFromParams}
-          onChangeText={value => onChange(value, 'name')}
-        />
-        <Text style={styles.label}>Seleccione el rol</Text>
-        <Picker
-          selectedValue={user?.role}
-          style={{color: 'black'}}
-          onValueChange={itemValue => {
-            onChange(itemValue, 'role');
-          }}>
-          {roles?.map(role => (
-            <Picker.Item label={role.name} value={role.id} key={role.id} />
-          ))}
-        </Picker>
+          <Text style={styles.label}>User Email:</Text>
+          <Text style={styles.emailLabel}>{user.email}</Text>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: 20,
-            marginBottom: 30,
-          }}>
-          <Button title="Camara" onPress={takePhoto} color="#5856d6" />
-          <View style={{width: 10}} />
-          <Button
-            title="Galeria"
-            onPress={takePhotoFromGallery}
-            color="#5856d6"
+          <Text style={styles.label}>User Name</Text>
+          <TextInput
+            placeholder="Usuario"
+            style={styles.textInput}
+            placeholderTextColor="#b5b5b5"
+            value={user?.name}
+            onChangeText={value => onChange(value, 'name')}
           />
-        </View>
+          <Text style={styles.label}>Seleccione el rol</Text>
+          <Picker
+            selectedValue={user?.role}
+            style={styles.pickerStyle}
+            onValueChange={itemValue => {
+              onChange(itemValue, 'role');
+            }}>
+            {roles?.map(role => (
+              <Picker.Item label={role.name} value={role.id} key={role.id} />
+            ))}
+          </Picker>
 
-        <Button
-          title="Guardar"
-          onPress={async () => {
-            await updateUserFunction();
-            navigation.goBack();
-          }}
-          color="#5856d6"
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.buttonStyle}
+            onPress={async () => {
+              await updateUserFunction();
+              navigation.goBack();
+            }}>
+            <Text style={{fontSize: 20}}>Save</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+
+        <ModalEditPhoto
+          modalVisible={modalVisible}
+          closeModal={closeModal}
+          takePhoto={takePhoto}
+          takePhotoFromGallery={takePhotoFromGallery}
         />
-      </View>
-    </ScrollView>
+      </ScrollView>
+      {loadingMutation && <Loading />}
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {flex: 1, marginTop: 10, marginHorizontal: 20},
-  label: {fontSize: 18, color: 'black', marginTop: 15},
+  label: {fontSize: 18, marginTop: 15, marginBottom: 5},
+  emailLabel: {
+    marginBottom: 10,
+    fontSize: 15,
+  },
+  pickerStyle: {
+    backgroundColor: '#205375',
+    marginBottom: 30,
+  },
+  buttonStyle: {
+    backgroundColor: '#F66B0E',
+    width: '95%',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    height: 40,
+  },
   textInput: {
-    color: 'black',
     borderWidth: 1,
     paddingHorizontal: 20,
     paddingVertical: 5,
     borderRadius: 20,
-    borderColor: 'rgba(0,0,0,0.2)',
+    borderColor: '#205375',
     height: 45,
     marginTop: 5,
     marginBottom: 15,

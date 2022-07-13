@@ -2,19 +2,20 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
 import {Picker} from '@react-native-picker/picker';
 import {
-  Button,
-  Image,
+  ActivityIndicator,
   RefreshControl,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {useProduct} from '../hooks/useProduct';
-import {DEFAULT_IMAGE} from './UserScreen';
-import {LoadingScreen} from './LoadingScreen';
+import {Loading} from './Loading';
+import {TouchableOpacity} from 'react-native';
+import {FadeInImage} from '../components/FadeInImage';
+import Text from '../components/CustomText';
+import {ModalEditPhoto} from '../components/ModalEditPhoto';
 
 interface Props
   extends NativeStackScreenProps<ProductsStackParams, 'ProductScreen'> {}
@@ -29,7 +30,12 @@ export const ProductScreen = ({
     product,
     categories,
     loading,
-    tempUri,
+    loadingMutation,
+    tempImage,
+    modalVisible,
+    refreshing,
+    closeModal,
+    openModal,
     saveOrUpdate,
     onChange,
     takePhoto,
@@ -37,115 +43,168 @@ export const ProductScreen = ({
     refetchProduct,
   } = useProduct(idFromParams, nameFromParams);
 
-  if (loading) <LoadingScreen />;
-
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl
-          refreshing={loading}
-          onRefresh={refetchProduct}
-          progressViewOffset={10}
-          progressBackgroundColor="white"
-          colors={['black']}
-        />
-      }>
-      <View style={styles.container}>
-        <Text style={styles.label}>Product name</Text>
-        <TextInput
-          placeholder="Producto"
-          style={styles.textInput}
-          placeholderTextColor="grey"
-          value={product.name !== undefined ? product.name : nameFromParams}
-          onChangeText={value => onChange(value, 'name')}
-        />
-        <Text style={styles.label}>Description</Text>
-        <TextInput
-          placeholder="Description"
-          style={styles.textInput}
-          placeholderTextColor="grey"
-          value={product?.description}
-          onChangeText={value => onChange(value, 'description')}
-        />
-        <Text style={styles.label}>Price</Text>
-        <TextInput
-          placeholder="Price"
-          style={styles.textInput}
-          placeholderTextColor="grey"
-          value={product?.price}
-          keyboardType="numeric"
-          onChangeText={value => onChange(value, 'price')}
-        />
-        <Text style={styles.label}>Select a category</Text>
-
-        <Picker
-          selectedValue={product?.category}
-          style={{color: 'black'}}
-          onValueChange={itemValue => {
-            onChange(itemValue, 'category');
-          }}>
-          {categories?.map(category => (
-            <Picker.Item
-              label={category.name}
-              value={category.id}
-              key={category.id}
+    <>
+      <ScrollView
+        refreshControl={
+          idFromParams ? (
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={refetchProduct}
+              progressViewOffset={10}
+              progressBackgroundColor="#205375"
+              colors={['#EFEFEF', '#F66B0E']}
             />
-          ))}
-        </Picker>
-
+          ) : (
+            <></>
+          )
+        }>
         {idFromParams?.length > 0 && (
           <>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                marginVertical: 10,
-              }}>
-              <Button title="Camera" onPress={takePhoto} color="#5856d6" />
-              <View style={{width: 10}} />
-              <Button
-                title="Galery"
-                onPress={takePhotoFromGallery}
-                color="#5856d6"
+            {loading ? (
+              <ActivityIndicator
+                size="large"
+                color="#EFEFEF"
+                style={{
+                  height: 300,
+                }}
               />
-            </View>
-            <Image
-              source={{uri: product?.image || tempUri || DEFAULT_IMAGE}}
-              style={{
-                width: '100%',
-                height: 300,
-                marginTop: 10,
-                marginBottom: 20,
-              }}
-            />
+            ) : (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  openModal();
+                }}>
+                <FadeInImage
+                  source={
+                    tempImage || product?.image
+                      ? {
+                          uri: tempImage?.uri || product?.image,
+                        }
+                      : require('../assets/no-image.jpg')
+                  }
+                  style={{
+                    width: '100%',
+                    height: 300,
+                  }}
+                />
+              </TouchableOpacity>
+            )}
           </>
         )}
 
-        <Button
-          title="Save"
-          onPress={async () => {
-            await saveOrUpdate();
-            navigation.goBack();
-          }}
-          color="#5856d6"
+        <View style={styles.container}>
+          <Text style={styles.label}>Product name</Text>
+          <TextInput
+            placeholder="Product"
+            style={styles.textInput}
+            placeholderTextColor="#b5b5b5"
+            value={product.name !== undefined ? product.name : nameFromParams}
+            onChangeText={value => onChange(value, 'name')}
+          />
+          <Text style={styles.label}>Description</Text>
+          <TextInput
+            placeholder="Description"
+            style={styles.textInput}
+            placeholderTextColor="#b5b5b5"
+            value={product?.description}
+            onChangeText={value => onChange(value, 'description')}
+          />
+          <Text style={styles.label}>Price</Text>
+          <TextInput
+            placeholder="Price"
+            style={styles.textInput}
+            placeholderTextColor="#b5b5b5"
+            value={product?.price}
+            keyboardType="numeric"
+            onChangeText={value => onChange(value, 'price')}
+          />
+          <Text style={styles.label}>Select category</Text>
+
+          <Picker
+            selectedValue={product?.category}
+            style={styles.pickerStyle}
+            dropdownIconColor="#EFEFEF"
+            dropdownIconRippleColor="#F66B0E"
+            onValueChange={itemValue => {
+              onChange(itemValue, 'category');
+            }}>
+            {categories?.map(category => (
+              <Picker.Item
+                style={{color: '#EFEFEF'}}
+                label={category.name}
+                value={category.id}
+                key={category.id}
+              />
+            ))}
+          </Picker>
+
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.buttonStyle}
+            onPress={async () => {
+              await saveOrUpdate();
+              navigation.goBack();
+            }}>
+            <Text style={{fontSize: 20}}>Save</Text>
+          </TouchableOpacity>
+        </View>
+
+        <ModalEditPhoto
+          closeModal={closeModal}
+          modalVisible={modalVisible}
+          takePhoto={takePhoto}
+          takePhotoFromGallery={takePhotoFromGallery}
         />
-      </View>
-    </ScrollView>
+      </ScrollView>
+
+      {loadingMutation && <Loading />}
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {flex: 1, marginVertical: 20, marginHorizontal: 20},
-  label: {fontSize: 18, color: 'black'},
+  label: {fontSize: 18, marginBottom: 5},
+  pickerStyle: {
+    fontSize: 18,
+    marginBottom: 20,
+    backgroundColor: '#205375',
+    // borderRadius: 10,
+  },
+  buttonStyle: {
+    backgroundColor: '#F66B0E',
+    width: '90%',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    height: 40,
+  },
   textInput: {
-    color: 'black',
+    color: '#EFEFEF',
     borderWidth: 1,
     paddingHorizontal: 20,
     paddingVertical: 5,
     borderRadius: 20,
-    borderColor: 'rgba(0,0,0,0.2)',
+    borderColor: '#205375',
     height: 45,
     marginTop: 5,
-    marginBottom: 15,
+    marginBottom: 25,
+  },
+  modalContent: {
+    backgroundColor: '#112B3C',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });

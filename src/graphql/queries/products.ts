@@ -10,9 +10,11 @@ export const GET_PRODUCTS = gql`
           available
           id
           active
+          image
           user {
             id
             name
+            email
             role {
               id
               name

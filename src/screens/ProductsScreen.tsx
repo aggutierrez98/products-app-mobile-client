@@ -1,23 +1,16 @@
 import React from 'react';
-import {
-  Alert,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {FlatList, RefreshControl, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useProducts} from '../hooks/useProducts';
+import {ProductItem} from '../components/ProductItem';
+import {ItemSeparator} from '../components/ItemSeparator';
 
-interface Props
+interface ProuductsProps
   extends NativeStackScreenProps<ProductsStackParams, 'ProductsScreen'> {}
 
-export const ProductsScreen = ({navigation}: Props) => {
+export const ProductsScreen = ({}: ProuductsProps) => {
   const {top} = useSafeAreaInsets();
   const {
     products,
@@ -41,64 +34,17 @@ export const ProductsScreen = ({navigation}: Props) => {
             refreshing={refreshing || loading}
             onRefresh={loadProductsFromBackend}
             progressViewOffset={10}
-            progressBackgroundColor="white"
-            colors={['black']}
+            progressBackgroundColor="#205375"
+            colors={['#EFEFEF', '#F66B0E']}
           />
         }
         data={products}
         keyExtractor={product => product.id}
         renderItem={({item}) => (
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={{
-              alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}
-            onPress={() => {
-              navigation.navigate('ProductScreen', {
-                id: item.id,
-                name: item.name,
-              });
-            }}>
-            <Text style={styles.productName}>{item.name}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                Alert.alert(
-                  'Estas seguro',
-                  'Eliminaras el producto y no se podra recuperar',
-                  [
-                    {
-                      text: 'Ok',
-                      onPress: () => {
-                        deleteProductFunc(item.id);
-                      },
-                    },
-                    {
-                      text: 'Cancelar',
-                      onPress: () => {},
-                    },
-                  ],
-                );
-              }}>
-              <Icon name="delete-outline" size={23} color="black" />
-            </TouchableOpacity>
-          </TouchableOpacity>
+          <ProductItem item={item} deleteProductFunc={deleteProductFunc} />
         )}
-        ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
+        ItemSeparatorComponent={ItemSeparator}
       />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  productName: {
-    fontSize: 20,
-    color: 'black',
-  },
-  itemSeparator: {
-    borderBottomWidth: 2,
-    borderBottomColor: 'rgba(0,0,0,0.1)',
-    marginVertical: 5,
-  },
-});

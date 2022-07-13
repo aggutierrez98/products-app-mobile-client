@@ -1,29 +1,33 @@
 import {DrawerActions, useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Text from '../components/CustomText';
 
 export const Header = ({
   backButton = false,
   title,
   text,
   onPress,
+  children,
 }: {
   backButton?: boolean;
   title?: string;
   text?: string;
   onPress?: Function;
+  children?: Element | Element[];
+  childrenProps?: any;
 }) => {
   const {dispatch, goBack} = useNavigation();
 
   return (
     <View
       style={{
-        backgroundColor: 'white',
+        backgroundColor: '#205375',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',
-        height: 50,
+        height: 60,
         paddingHorizontal: 15,
       }}>
       <View style={{alignItems: 'center', flexDirection: 'row'}}>
@@ -32,8 +36,8 @@ export const Header = ({
             <Icon
               style={{marginRight: 15}}
               name="arrow-back"
-              size={23}
-              color="black"
+              size={30}
+              color="#F66B0E"
             />
           </TouchableOpacity>
         ) : (
@@ -43,18 +47,24 @@ export const Header = ({
             <Icon
               style={{marginRight: 15}}
               name="reorder"
-              size={23}
-              color="black"
+              size={30}
+              color="#F66B0E"
             />
           </TouchableOpacity>
         )}
-        <Text style={{color: 'black', fontSize: 20}}>{title}</Text>
+        <Text
+          style={{
+            fontSize: 22,
+            fontFamily: 'RobotoCondensed-Italic',
+          }}>
+          {title}
+        </Text>
       </View>
 
       {onPress && text && (
         <TouchableOpacity
           style={{
-            backgroundColor: '#2011c4',
+            backgroundColor: '#F66B0E',
             padding: 5,
             paddingHorizontal: 10,
             borderRadius: 10,
@@ -62,9 +72,10 @@ export const Header = ({
           }}
           activeOpacity={0.8}
           onPress={() => onPress()}>
-          <Text style={{color: 'white', fontSize: 20}}>{text}</Text>
+          <Text style={{fontSize: 20}}>{text}</Text>
         </TouchableOpacity>
       )}
+      {children}
     </View>
   );
 };

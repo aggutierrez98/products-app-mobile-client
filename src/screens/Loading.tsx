@@ -1,9 +1,7 @@
 import React from 'react';
 import {ActivityIndicator, View} from 'react-native';
 
-export const LoadingScreen = () => {
-  console.log('aca?');
-
+export const Loading = () => {
   return (
     <View
       style={{
@@ -11,12 +9,12 @@ export const LoadingScreen = () => {
         position: 'absolute',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white',
+        backgroundColor: 'rgba(0,0,0,0.5)',
         zIndex: 999,
         height: '100%',
         width: '100%',
       }}>
-      <ActivityIndicator size={50} color="black" />
+      <ActivityIndicator size={50} color="#EFEFEF" />
     </View>
   );
 };

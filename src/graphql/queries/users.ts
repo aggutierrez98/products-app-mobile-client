@@ -9,6 +9,11 @@ export const GET_USERS = gql`
           name
           email
           image
+          active
+          role {
+            id
+            name
+          }
         }
         count
       }

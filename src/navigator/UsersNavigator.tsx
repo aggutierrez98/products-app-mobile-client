@@ -29,6 +29,7 @@ export const UsersNavigator = ({}: NavProps) => {
               backButton={name === 'UserScreen'}
             />
           ),
+          contentStyle: {backgroundColor: '#112B3C'},
         };
       }}>
       <Stack.Screen name="UsersScreen" component={UsersScreen} />

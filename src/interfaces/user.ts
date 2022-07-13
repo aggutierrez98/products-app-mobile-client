@@ -23,6 +23,7 @@ export interface User {
   email: string;
   image?: null;
   role: Role;
+  active: Boolean;
 }
 
 export type GetUsersRes = QueryResult<

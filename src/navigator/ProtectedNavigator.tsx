@@ -33,6 +33,7 @@ const ProtectedNavigator = ({}: Props) => {
       screenOptions={{
         headerShown: false,
         drawerType: width >= 768 ? 'permanent' : 'front',
+        sceneContainerStyle: {backgroundColor: '#112B3C'},
       }}>
       <Drawer.Screen name="ProductsNavigator" component={ProductsNavigator} />
       <Drawer.Screen name="UsersNavigator" component={UsersNavigator} />

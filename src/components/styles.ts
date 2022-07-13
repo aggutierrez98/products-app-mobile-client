@@ -38,12 +38,12 @@ export const componentStyles = StyleSheet.create({
     height: 300,
     borderRadius: 150,
   },
-  menuContainer: {
-    marginVertical: 30,
-    marginHorizontal: 50,
-  },
+
   menuBoton: {
     marginVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 5,
   },
-  menuTexto: {fontSize: 20, color: 'black'},
+  menuTexto: {fontSize: 24},
 });

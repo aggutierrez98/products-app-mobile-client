@@ -46,3 +46,27 @@ export const DEACTIVATE_USER = gql`
     }
   }
 `;
+
+export const ACTIVATE_USER = gql`
+  mutation ActivateUser($id: ID!) {
+    activateUser(id: $id) {
+      ... on User {
+        id
+        name
+        email
+        image
+        role {
+          id
+          name
+        }
+        active
+        google
+      }
+      ... on InputError {
+        error {
+          message
+        }
+      }
+    }
+  }
+`;

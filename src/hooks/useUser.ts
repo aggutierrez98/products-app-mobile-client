@@ -2,7 +2,7 @@ import {useMutation, useQuery} from '@apollo/client';
 import {ReactNativeFile} from 'apollo-upload-client';
 import {useEffect, useState} from 'react';
 import {
-  ImagePickerResponse,
+  Asset,
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker';
@@ -14,7 +14,12 @@ import {GetUserRes, GetRolesRes} from '../interfaces';
 import {useForm} from './useForm';
 
 export const useUser = (id: string, name: string) => {
-  const [tempUri, setTempUri] = useState<string>();
+  const [tempImage, setTempImage] = useState<Asset>();
+  const [modalVisible, setModalVisible] = useState(false);
+  const closeModal = () => setModalVisible(false);
+  const openModal = () => setModalVisible(true);
+  const [refreshing, setRefreshing] = useState(false);
+
   const {
     data: userData,
     loading: loadingGet,
@@ -31,10 +36,11 @@ export const useUser = (id: string, name: string) => {
   const {data: rolesData}: GetRolesRes = useQuery(GET_ROLES);
   const roles = rolesData?.getRoles.roles;
 
-  const refetchUser = () => {
-    refetch();
+  const refetchUser = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
   };
-
   const {
     form: user,
     onChange,
@@ -71,13 +77,15 @@ export const useUser = (id: string, name: string) => {
         console.log({err});
       },
     });
+
+    if (tempImage) uploadImage(tempImage);
   };
 
-  const uploadImage = async (data: ImagePickerResponse) => {
+  const uploadImage = async (data: Asset) => {
     const fileToUpload = new ReactNativeFile({
-      uri: data.assets![0].uri!,
-      type: data.assets![0].type,
-      name: data.assets![0].fileName,
+      uri: data.uri!,
+      type: data.type,
+      name: data.fileName,
     });
 
     updateImage({
@@ -120,8 +128,8 @@ export const useUser = (id: string, name: string) => {
         if (resp.didCancel) return;
         if (!resp.assets || resp.assets.length === 0) return;
 
-        setTempUri(resp.assets[0].uri);
-        uploadImage(resp);
+        setTempImage(resp.assets[0]);
+        closeModal();
       },
     );
   };
@@ -136,17 +144,22 @@ export const useUser = (id: string, name: string) => {
         if (resp.didCancel) return;
         if (!resp.assets || resp.assets.length === 0) return;
 
-        setTempUri(resp.assets[0].uri);
-        uploadImage(resp);
+        setTempImage(resp.assets[0]);
+        closeModal();
       },
     );
   };
 
   return {
-    tempUri,
+    tempImage,
     user,
     roles,
-    loading: loadingUpdate || loadingUpdateImage || loadingGet,
+    loading: loadingGet,
+    loadingMutation: loadingUpdate || loadingUpdateImage,
+    refreshing,
+    modalVisible,
+    openModal,
+    closeModal,
     updateUserFunction,
     onChange,
     takePhoto,

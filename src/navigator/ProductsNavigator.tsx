@@ -45,6 +45,7 @@ export const ProductsNavigator = ({navigation}: Props) => {
               }}
             />
           ),
+          contentStyle: {backgroundColor: '#112B3C'},
         };
       }}>
       <Stack.Screen name="ProductsScreen" component={ProductsScreen} />

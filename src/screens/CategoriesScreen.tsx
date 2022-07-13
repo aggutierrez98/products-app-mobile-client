@@ -3,7 +3,6 @@ import {
   Alert,
   FlatList,
   RefreshControl,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -11,11 +10,14 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {MyModal} from '../components/CustomModal';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useCategory} from '../hooks/useCategory';
 import {categoriesStyles} from '../theme/categoriesTheme';
 import {ProtectedNavigationParams} from '../navigator/ProtectedNavigator';
 import {Header} from '../components/Header';
+import {CategoryItem} from '../components/CategoryItem';
+import {ItemSeparator} from '../components/ItemSeparator';
+import Text from '../components/CustomText';
+import {Loading} from './Loading';
 
 interface Props
   extends DrawerScreenProps<ProtectedNavigationParams, 'CategoriesScreen'> {}
@@ -27,6 +29,7 @@ export const CategoriesScreen = ({navigation}: Props) => {
     categories,
     inputError,
     loading,
+    loadingMutation,
     refreshing,
     categoryName,
     modalVisible,
@@ -78,66 +81,27 @@ export const CategoriesScreen = ({navigation}: Props) => {
               refreshing={refreshing || loading}
               onRefresh={loadProductsFromBackend}
               progressViewOffset={10}
-              progressBackgroundColor="white"
-              colors={['black']}
+              progressBackgroundColor="#205375"
+              colors={['#EFEFEF', '#F66B0E']}
             />
           }
           data={categories}
           keyExtractor={product => product.id}
           renderItem={({item}) => (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <Text style={categoriesStyles.categoryName}>{item.name}</Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  width: '15%',
-                  justifyContent: 'space-between',
-                }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    openModal('Edit', 'Edit', item);
-                  }}>
-                  <Icon name="edit" size={23} color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    Alert.alert(
-                      'Estas seguro',
-                      'Eliminaras la categoria y no se podra recuperar',
-                      [
-                        {
-                          text: 'Ok',
-                          onPress: () => {
-                            deleteCategoryHandler(item.id);
-                          },
-                        },
-                        {
-                          text: 'Cancelar',
-                          onPress: () => {},
-                        },
-                      ],
-                    );
-                  }}>
-                  <Icon name="delete-outline" size={23} color="black" />
-                </TouchableOpacity>
-              </View>
-            </View>
+            <CategoryItem
+              item={item}
+              deleteCategoryHandler={deleteCategoryHandler}
+              openModal={openModal}
+            />
           )}
-          ItemSeparatorComponent={() => (
-            <View style={categoriesStyles.itemSeparator} />
-          )}
+          ItemSeparatorComponent={ItemSeparator}
         />
       </View>
       <MyModal visible={modalVisible} dismiss={closeModal}>
         <View style={categoriesStyles.modalContent}>
           <Text style={categoriesStyles.label}>{modalData.title}</Text>
           <TextInput
-            placeholder="Categoria"
+            placeholder="Category"
             style={categoriesStyles.textInput}
             placeholderTextColor="grey"
             value={categoryName}
@@ -149,10 +113,12 @@ export const CategoriesScreen = ({navigation}: Props) => {
             onPress={() => {
               saveOrUpdateCategory(modalData.categoryData?.id);
             }}>
-            <Text style={categoriesStyles.textStyle}>Save</Text>
+            <Text>Save</Text>
           </TouchableOpacity>
         </View>
       </MyModal>
+
+      {loadingMutation && <Loading />}
     </>
   );
 };

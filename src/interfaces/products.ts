@@ -22,13 +22,8 @@ export interface GetProductsResponse {
 }
 
 export interface Products {
-  products: ProductShort[];
+  products: Product[];
   count: number;
-}
-
-export interface ProductShort {
-  id: string;
-  name: string;
 }
 
 export type GetProductRes = QueryResult<
