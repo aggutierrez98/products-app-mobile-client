@@ -132,7 +132,7 @@ export const ProductScreen = ({
               }}>
               {categories?.map(category => (
                 <Picker.Item
-                  style={{color: '#EFEFEF'}}
+                  style={styles.pickerItem}
                   label={category.name}
                   value={category.id}
                   key={category.id}
@@ -167,7 +167,7 @@ export const ProductScreen = ({
 
 const styles = StyleSheet.create({
   container: {flex: 1, marginVertical: 20, marginHorizontal: 20},
-  label: {fontSize: 18, marginBottom: 5},
+  label: {fontSize: 18, marginBottom: 5, fontFamily: 'RobotoCondensed-Bold'},
   pickerContainer: {
     borderRadius: 25,
     borderColor: '#205375',
@@ -177,6 +177,10 @@ const styles = StyleSheet.create({
   },
   pickerStyle: {
     fontSize: 18,
+  },
+  pickerItem: {
+    fontFamily: 'RobotoCondensed-Light',
+    color: '#EFEFEF',
   },
   buttonStyle: {
     marginVertical: 20,
@@ -191,10 +195,12 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 20,
+    fontFamily: 'RobotoCondensed-Bold',
   },
   textInput: {
     color: '#EFEFEF',
     borderWidth: 1,
+    fontFamily: 'RobotoCondensed-Light',
     paddingHorizontal: 20,
     paddingVertical: 5,
     borderRadius: 20,

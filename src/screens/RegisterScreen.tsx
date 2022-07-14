@@ -52,18 +52,17 @@ export const RegisterScreen = ({navigation}: Props) => {
         <Background>
           <View style={loginStyles.formContainer}>
             <Logo />
-            <Text style={loginStyles.title}>Registro</Text>
-            <Text style={loginStyles.label}>Nombre</Text>
+            <Text style={loginStyles.title}>Register</Text>
+            <Text style={loginStyles.label}>Name</Text>
             <TextInput
               style={[
                 loginStyles.inputField,
                 Platform.OS === 'ios' && loginStyles.inputFieldIOS,
               ]}
-              placeholder="Ingrese su nombre"
-              placeholderTextColor="rgba(255,255,255,0.4)"
+              placeholder="Name"
+              placeholderTextColor="rgba(255,255,255,0.35)"
               keyboardType="default"
-              underlineColorAndroid={'white'}
-              selectionColor="white"
+              underlineColorAndroid="#EFEFEF"
               autoCapitalize="words"
               autoCorrect={false}
               onChangeText={value => onChange(value, 'name')}
@@ -80,11 +79,11 @@ export const RegisterScreen = ({navigation}: Props) => {
                 loginStyles.inputField,
                 Platform.OS === 'ios' && loginStyles.inputFieldIOS,
               ]}
-              placeholder="Ingrese su email"
-              placeholderTextColor="rgba(255,255,255,0.4)"
+              placeholder="Email"
+              placeholderTextColor="rgba(255,255,255,0.35)"
               keyboardType="email-address"
-              underlineColorAndroid={'white'}
-              selectionColor="white"
+              underlineColorAndroid="#EFEFEF"
+              selectionColor="#EFEFEF"
               autoCapitalize="none"
               autoCorrect={false}
               onChangeText={value => onChange(value, 'email')}
@@ -95,18 +94,18 @@ export const RegisterScreen = ({navigation}: Props) => {
               }}
             />
 
-            <Text style={loginStyles.label}>Contraseña</Text>
+            <Text style={loginStyles.label}>Password</Text>
             <View style={{position: 'relative'}}>
               <TextInput
                 style={[
                   loginStyles.inputField,
                   Platform.OS === 'ios' && loginStyles.inputFieldIOS,
                 ]}
-                placeholder="Ingrese su contraseña"
-                placeholderTextColor="rgba(255,255,255,0.4)"
+                placeholder="********"
+                placeholderTextColor="rgba(255,255,255,0.35)"
                 secureTextEntry={hidePass ? true : false}
-                underlineColorAndroid={'white'}
-                selectionColor="white"
+                underlineColorAndroid="#EFEFEF"
+                selectionColor="#EFEFEF"
                 autoCapitalize="none"
                 autoCorrect={false}
                 onChangeText={value => onChange(value, 'password')}
@@ -123,7 +122,7 @@ export const RegisterScreen = ({navigation}: Props) => {
                 <Icon
                   name={hidePass ? 'visibility' : 'visibility-off'}
                   size={25}
-                  color="grey"
+                  color="#b5b5b5"
                 />
               </TouchableOpacity>
             </View>

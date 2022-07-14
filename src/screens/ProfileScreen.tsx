@@ -27,36 +27,12 @@ export const ProfileScreen = () => {
             style={componentStyles.avatarInProtected}
           />
         </View>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            marginTop: 15,
-            color: '#F66B0E',
-          }}>
-          EMAIL:
-        </Text>
-        <Text style={{fontSize: 15}}>{user?.email}</Text>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            marginTop: 15,
-            color: '#F66B0E',
-          }}>
-          NAME:
-        </Text>
-        <Text style={{}}>{user?.name}</Text>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            marginTop: 15,
-            color: '#F66B0E',
-          }}>
-          ROLE:
-        </Text>
-        <Text style={{}}>{user?.role.name}</Text>
+        <Text style={styles.label}>Email:</Text>
+        <Text style={styles.title}>{user?.email}</Text>
+        <Text style={styles.label}>Name:</Text>
+        <Text style={styles.title}>{user?.name}</Text>
+        <Text style={styles.label}>Role:</Text>
+        <Text style={styles.title}>{user?.role.name}</Text>
       </View>
     </ScrollView>
   );
@@ -69,7 +45,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 20,
+    fontSize: 17,
     marginBottom: 20,
+  },
+  label: {
+    fontSize: 20,
+    fontFamily: 'RobotoCondensed-BoldItalic',
+    marginTop: 15,
+    color: '#F66B0E',
   },
 });

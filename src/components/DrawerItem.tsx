@@ -40,5 +40,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 2,
   },
-  menuTexto: {fontSize: 20},
+  menuTexto: {fontSize: 20, fontFamily: 'RobotoCondensed-Regular'},
 });

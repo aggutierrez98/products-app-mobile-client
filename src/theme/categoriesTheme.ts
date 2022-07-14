@@ -17,10 +17,11 @@ export const categoriesStyles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  label: {fontSize: 18, marginBottom: 10},
+  label: {fontSize: 18, marginBottom: 10, fontFamily: 'RobotoCondensed-Bold'},
   textInput: {
     color: '#EFEFEF',
     borderWidth: 1,
+    fontFamily: 'RobotoCondensed-Light',
     width: '80%',
     paddingHorizontal: 20,
     paddingVertical: 5,
@@ -43,7 +44,11 @@ export const categoriesStyles = StyleSheet.create({
   },
   buttonSave: {
     backgroundColor: '#F66B0E',
+    fontFamily: 'RobotoCondensed-Bold',
     width: '40%',
+  },
+  buttonText: {
+    fontFamily: 'RobotoCondensed-Bold',
   },
   modalText: {
     marginBottom: 15,

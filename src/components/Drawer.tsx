@@ -1,10 +1,11 @@
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import React from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import Text from '../components/CustomText';
 import {DrawerItem} from './DrawerItem';
 import {useAuth} from '../hooks/useAuth';
 import {FadeInImage} from './FadeInImage';
+import {LogoMenu} from './LogoMenu';
 
 export const CustomDrawer = () => {
   const {user} = useAuth();
@@ -13,7 +14,7 @@ export const CustomDrawer = () => {
     <DrawerContentScrollView style={{backgroundColor: '#112B3C'}}>
       {/* Logo */}
       <View style={styles.logo}>
-        <Image source={require('../assets/logo-2.png')} />
+        <LogoMenu />
       </View>
 
       {/* User */}

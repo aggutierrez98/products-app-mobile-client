@@ -51,11 +51,11 @@ export const LoginScreen = ({navigation}: Props) => {
                 loginStyles.inputField,
                 Platform.OS === 'ios' && loginStyles.inputFieldIOS,
               ]}
-              placeholder="Input your email"
-              placeholderTextColor="rgba(255,255,255,0.4)"
+              placeholder="Email"
+              placeholderTextColor="rgba(255,255,255,0.35)"
               keyboardType="email-address"
-              underlineColorAndroid={'white'}
-              selectionColor="white"
+              underlineColorAndroid="#EFEFEF"
+              selectionColor="#EFEFEF"
               autoCapitalize="none"
               autoCorrect={false}
               onChangeText={value => onChange(value, 'email')}
@@ -73,11 +73,11 @@ export const LoginScreen = ({navigation}: Props) => {
                   loginStyles.inputField,
                   Platform.OS === 'ios' && loginStyles.inputFieldIOS,
                 ]}
-                placeholder="Input your password"
-                placeholderTextColor="rgba(255,255,255,0.4)"
+                placeholder="********"
+                placeholderTextColor="rgba(255,255,255,0.35)"
                 secureTextEntry={hidePass ? true : false}
-                underlineColorAndroid={'white'}
-                selectionColor="white"
+                underlineColorAndroid="#EFEFEF"
+                selectionColor="#EFEFEF"
                 autoCapitalize="none"
                 autoCorrect={false}
                 onChangeText={value => onChange(value, 'password')}
@@ -94,7 +94,7 @@ export const LoginScreen = ({navigation}: Props) => {
                 <Icon
                   name={hidePass ? 'visibility' : 'visibility-off'}
                   size={25}
-                  color="grey"
+                  color="#b5b5b5"
                 />
               </TouchableOpacity>
             </View>

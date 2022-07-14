@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import {useAnimation} from '../hooks/useAnimation';
+import {componentStyles} from './styles';
 
 interface Props {
   source: ImageURISource;
@@ -32,6 +33,7 @@ export const FadeInImage = ({source, style = {}}: Props) => {
       style={{
         justifyContent: 'center',
         alignItems: 'center',
+        ...componentStyles.shadowStyle,
         ...(style as any),
       }}>
       {isLoading && (

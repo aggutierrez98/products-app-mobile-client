@@ -30,13 +30,13 @@ export const ModalEditPhoto = ({
           activeOpacity={0.8}
           style={styles.buttonStyle}
           onPress={takePhoto}>
-          <Text style={{fontSize: 20}}>Camera</Text>
+          <Text style={styles.buttonText}>Camera</Text>
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.buttonStyle}
           onPress={takePhotoFromGallery}>
-          <Text style={{fontSize: 20}}>Gallery</Text>
+          <Text style={styles.buttonText}>Gallery</Text>
         </TouchableOpacity>
       </View>
     </MyModal>
@@ -69,4 +69,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 40,
   },
+  buttonText: {fontSize: 20, fontFamily: 'RobotoCondensed-Regular'},
 });

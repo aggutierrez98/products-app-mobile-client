@@ -109,7 +109,12 @@ export const UserScreen = ({
                 onChange(itemValue, 'role');
               }}>
               {roles?.map(role => (
-                <Picker.Item label={role.name} value={role.id} key={role.id} />
+                <Picker.Item
+                  style={styles.pickerItem}
+                  label={role.name}
+                  value={role.id}
+                  key={role.id}
+                />
               ))}
             </Picker>
           </View>
@@ -121,7 +126,7 @@ export const UserScreen = ({
               await updateUserFunction();
               navigation.goBack();
             }}>
-            <Text style={{fontSize: 20}}>Save</Text>
+            <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
         </KeyboardAvoidingView>
 
@@ -139,7 +144,12 @@ export const UserScreen = ({
 
 const styles = StyleSheet.create({
   container: {flex: 1, marginTop: 10, marginHorizontal: 20},
-  label: {fontSize: 18, marginTop: 15, marginBottom: 5},
+  label: {
+    fontSize: 18,
+    marginTop: 15,
+    marginBottom: 5,
+    fontFamily: 'RobotoCondensed-Bold',
+  },
   emailLabel: {
     marginBottom: 10,
     fontSize: 15,
@@ -154,6 +164,10 @@ const styles = StyleSheet.create({
   pickerStyle: {
     fontSize: 18,
   },
+  pickerItem: {
+    fontFamily: 'RobotoCondensed-Light',
+    color: '#EFEFEF',
+  },
   buttonStyle: {
     marginVertical: 20,
     backgroundColor: '#F66B0E',
@@ -165,7 +179,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 40,
   },
+  buttonText: {fontSize: 20, fontFamily: 'RobotoCondensed-Bold'},
   textInput: {
+    color: '#EFEFEF',
+    fontFamily: 'RobotoCondensed-Light',
     borderWidth: 1,
     paddingHorizontal: 20,
     paddingVertical: 5,

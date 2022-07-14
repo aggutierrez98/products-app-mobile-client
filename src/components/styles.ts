@@ -46,4 +46,19 @@ export const componentStyles = StyleSheet.create({
     padding: 5,
   },
   menuTexto: {fontSize: 24},
+  shadowStyle: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.58,
+    shadowRadius: 16.0,
+    elevation: 24,
+  },
+  textShadowStyle: {
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10.0,
+  },
 });

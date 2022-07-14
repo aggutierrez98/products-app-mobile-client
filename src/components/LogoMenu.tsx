@@ -4,29 +4,30 @@ import Text from '../components/CustomText';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {componentStyles} from './styles';
 
-export const Logo = () => {
+export const LogoMenu = () => {
   return (
     <View
       style={{
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
       }}>
       <Text
         style={{
           color: '#F66B0E',
-          fontSize: 30,
+          fontSize: 25,
           fontFamily: 'RobotoCondensed-Bold',
-          marginRight: 15,
           ...componentStyles.textShadowStyle,
         }}>
         PRODUCTS APP
       </Text>
       <Icon
-        style={{paddingBottom: 7.5, ...componentStyles.textShadowStyle}}
         name="card-giftcard"
-        size={70}
+        size={100}
         color="#F66B0E"
+        style={{
+          ...componentStyles.textShadowStyle,
+        }}
       />
     </View>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {MainNavigator} from './src/navigator/MainNavigator';
@@ -8,6 +8,7 @@ import ExpireStorage from './src/helpers/saveDataToStorage';
 import Config from 'react-native-config';
 import {createUploadLink} from 'apollo-upload-client';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import SplashScreen from 'react-native-splash-screen';
 
 const httpLink = createUploadLink({
   uri: Config.API_URL,
@@ -30,6 +31,10 @@ const client = new ApolloClient({
 });
 
 const App = () => {
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <ApolloProvider client={client}>

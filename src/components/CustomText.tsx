@@ -9,7 +9,7 @@ export default (props: TextProps) => (
 
 const defaultStlyes = StyleSheet.create({
   style: {
-    fontFamily: 'RobotoCondensed-Regular',
+    fontFamily: 'RobotoCondensed-Light',
     color: '#EFEFEF',
   },
 });

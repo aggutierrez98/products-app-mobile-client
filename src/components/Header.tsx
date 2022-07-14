@@ -72,7 +72,9 @@ export const Header = ({
           }}
           activeOpacity={0.8}
           onPress={() => onPress()}>
-          <Text style={{fontSize: 20}}>{text}</Text>
+          <Text style={{fontSize: 20, fontFamily: 'RobotoCondensed-Regular'}}>
+            {text}
+          </Text>
         </TouchableOpacity>
       )}
       {children}

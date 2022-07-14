@@ -19,7 +19,8 @@ export const loginStyles = StyleSheet.create({
     fontSize: 20,
   },
   inputField: {
-    color: 'white',
+    color: '#EFEFEF',
+    fontFamily: 'RobotoCondensed-Regular',
     fontSize: 20,
   },
   inputFieldIOS: {
@@ -43,12 +44,12 @@ export const loginStyles = StyleSheet.create({
   buttonToNav: {position: 'absolute', right: 8},
   buttomText: {
     fontSize: 18,
+    fontFamily: 'RobotoCondensed-Bold',
     // color: 'white',
     color: '#F66B0E',
   },
   newUserbuttomText: {
     fontSize: 18,
-    // color: '#F66B0E',
     textDecorationLine: 'underline',
   },
   newUserContainer: {

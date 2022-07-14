@@ -113,7 +113,7 @@ export const CategoriesScreen = ({navigation}: Props) => {
             onPress={() => {
               saveOrUpdateCategory(modalData.categoryData?.id);
             }}>
-            <Text>Save</Text>
+            <Text style={categoriesStyles.buttonText}>Save</Text>
           </TouchableOpacity>
         </View>
       </MyModal>
