@@ -1,8 +1,16 @@
 import React from 'react';
-import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {Alert} from 'react-native';
 import {Category} from '../interfaces';
-import Text from '../components/CustomText';
+import {
+  ButtonsContainer,
+  CardContainer,
+  Name,
+  Detail,
+  DeleteButton,
+  EditButton,
+  TextContainer,
+  Icon,
+} from '../theme/components/CategoryItem';
 
 export const CategoryItem = ({
   item,
@@ -14,27 +22,21 @@ export const CategoryItem = ({
   deleteCategoryHandler: (id: string) => void;
 }) => {
   return (
-    <View style={styles.cardContainer}>
-      <View style={styles.textContainer}>
-        <Text style={styles.categoryName} numberOfLines={1}>
-          {item.name}
-        </Text>
-        <Text style={styles.categoryUserName} numberOfLines={1}>
-          {item.user.name}
-        </Text>
-      </View>
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
+    <CardContainer>
+      <TextContainer>
+        <Name numberOfLines={1}>{item.name}</Name>
+        <Detail numberOfLines={1}>{item.user.name}</Detail>
+      </TextContainer>
+      <ButtonsContainer>
+        <EditButton
           activeOpacity={0.7}
-          style={styles.editButton}
           onPress={() => {
             openModal('Edit', 'Edit', item);
           }}>
-          <Icon name="edit" size={27.5} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity
+          <Icon name="edit" />
+        </EditButton>
+        <DeleteButton
           activeOpacity={0.7}
-          style={styles.deleteButton}
           onPress={() => {
             Alert.alert(
               'Are you sure to delete?',
@@ -55,49 +57,9 @@ export const CategoryItem = ({
               ],
             );
           }}>
-          <Icon name="delete-outline" size={27.5} color="white" />
-        </TouchableOpacity>
-      </View>
-    </View>
+          <Icon name="delete-outline" />
+        </DeleteButton>
+      </ButtonsContainer>
+    </CardContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  deleteButton: {
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: '#af0303',
-  },
-  editButton: {
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: '#205375',
-  },
-  cardContainer: {
-    height: 60,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  buttonsContainer: {
-    width: '26%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  textContainer: {
-    flex: 1,
-  },
-  categoryName: {
-    flex: 1,
-    fontSize: 18,
-    marginHorizontal: 10,
-    marginTop: 5,
-    marginBottom: -5,
-  },
-  categoryUserName: {
-    flex: 1,
-    fontSize: 14,
-    color: '#b5b5b5',
-    marginHorizontal: 10,
-  },
-});

@@ -8,6 +8,7 @@ import {ProductsScreen} from '../screens/ProductsScreen';
 import {ProtectedNavigationParams} from './ProtectedNavigator';
 import {CommonActions} from '@react-navigation/native';
 import {Header} from '../components/Header';
+import {useTheme} from 'styled-components';
 
 export type ProductsStackParams = {
   ProductsScreen: undefined;
@@ -23,6 +24,8 @@ interface Props
   > {}
 
 export const ProductsNavigator = ({navigation}: Props) => {
+  const {colors} = useTheme();
+
   return (
     <Stack.Navigator
       screenOptions={({route: {params, name}}) => {
@@ -45,7 +48,7 @@ export const ProductsNavigator = ({navigation}: Props) => {
               }}
             />
           ),
-          contentStyle: {backgroundColor: '#112B3C'},
+          contentStyle: {backgroundColor: colors.background},
         };
       }}>
       <Stack.Screen name="ProductsScreen" component={ProductsScreen} />

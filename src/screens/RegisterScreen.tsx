@@ -1,26 +1,32 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useEffect, useState} from 'react';
-import {
-  Alert,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, Keyboard, Platform} from 'react-native';
 import {Background} from '../components/Background';
-import Text from '../components/CustomText';
 import {Logo} from '../components/Logo';
 import {useAuth} from '../hooks/useAuth';
-import {loginStyles} from '../theme/loginTheme';
-import {Loading} from './Loading';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {Loading} from '../components/Loading';
+import {FormButtomText} from '../theme/screens/AuthScreenStyles';
+import {
+  FormContainer,
+  KeyboardAvoidingView,
+  FormInput,
+  FormTitle,
+  FormLabel,
+  FormPassInputContainer,
+  FormShowPassButton,
+  FormPassIcon,
+  FormBottomContainer,
+  FormButtonToNav,
+  FormNewUserbuttomText,
+  FormButton,
+} from '../theme/screens/AuthScreenStyles';
+import {useTheme} from 'styled-components';
 
 interface Props extends NativeStackScreenProps<any, any> {}
 
 export const RegisterScreen = ({navigation}: Props) => {
   const [hidePass, setHidePass] = useState(true);
+  const {colors} = useTheme();
 
   const {
     name,
@@ -47,22 +53,17 @@ export const RegisterScreen = ({navigation}: Props) => {
       {loading && <Loading />}
 
       <KeyboardAvoidingView
-        style={{flex: 1, marginBottom: 0, position: 'relative'}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <Background>
-          <View style={loginStyles.formContainer}>
+          <FormContainer>
             <Logo />
-            <Text style={loginStyles.title}>Register</Text>
-            <Text style={loginStyles.label}>Name</Text>
-            <TextInput
-              style={[
-                loginStyles.inputField,
-                Platform.OS === 'ios' && loginStyles.inputFieldIOS,
-              ]}
+            <FormTitle>Register</FormTitle>
+            <FormLabel>Name</FormLabel>
+            <FormInput
               placeholder="Name"
               placeholderTextColor="rgba(255,255,255,0.35)"
               keyboardType="default"
-              underlineColorAndroid="#EFEFEF"
+              underlineColorAndroid={colors.text}
               autoCapitalize="words"
               autoCorrect={false}
               onChangeText={value => onChange(value, 'name')}
@@ -73,17 +74,13 @@ export const RegisterScreen = ({navigation}: Props) => {
               }}
             />
 
-            <Text style={loginStyles.label}>Email</Text>
-            <TextInput
-              style={[
-                loginStyles.inputField,
-                Platform.OS === 'ios' && loginStyles.inputFieldIOS,
-              ]}
+            <FormLabel>Email</FormLabel>
+            <FormInput
               placeholder="Email"
               placeholderTextColor="rgba(255,255,255,0.35)"
               keyboardType="email-address"
-              underlineColorAndroid="#EFEFEF"
-              selectionColor="#EFEFEF"
+              underlineColorAndroid={colors.text}
+              selectionColor={colors.text}
               autoCapitalize="none"
               autoCorrect={false}
               onChangeText={value => onChange(value, 'email')}
@@ -94,18 +91,14 @@ export const RegisterScreen = ({navigation}: Props) => {
               }}
             />
 
-            <Text style={loginStyles.label}>Password</Text>
-            <View style={{position: 'relative'}}>
-              <TextInput
-                style={[
-                  loginStyles.inputField,
-                  Platform.OS === 'ios' && loginStyles.inputFieldIOS,
-                ]}
+            <FormLabel>Password</FormLabel>
+            <FormPassInputContainer>
+              <FormInput
                 placeholder="********"
                 placeholderTextColor="rgba(255,255,255,0.35)"
                 secureTextEntry={hidePass ? true : false}
-                underlineColorAndroid="#EFEFEF"
-                selectionColor="#EFEFEF"
+                underlineColorAndroid={colors.text}
+                selectionColor={colors.text}
                 autoCapitalize="none"
                 autoCorrect={false}
                 onChangeText={value => onChange(value, 'password')}
@@ -115,36 +108,33 @@ export const RegisterScreen = ({navigation}: Props) => {
                   registerHandler();
                 }}
               />
-              <TouchableOpacity
-                style={{position: 'absolute', right: 8, top: 12}}
+              <FormShowPassButton
                 activeOpacity={0.5}
                 onPress={() => setHidePass(!hidePass)}>
-                <Icon
+                <FormPassIcon
                   name={hidePass ? 'visibility' : 'visibility-off'}
                   size={25}
-                  color="#b5b5b5"
+                  color={colors.placeholder}
                 />
-              </TouchableOpacity>
-            </View>
+              </FormShowPassButton>
+            </FormPassInputContainer>
 
-            <View style={loginStyles.bottomContainer}>
-              <TouchableOpacity
+            <FormBottomContainer>
+              <FormButton
                 activeOpacity={0.8}
-                style={loginStyles.buttom}
                 onPress={() => {
                   Keyboard.dismiss();
                   registerHandler();
                 }}>
-                <Text style={loginStyles.buttomText}>Register</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+                <FormButtomText>Register</FormButtomText>
+              </FormButton>
+              <FormButtonToNav
                 activeOpacity={0.8}
-                style={loginStyles.buttonToNav}
                 onPress={() => navigation.replace('LoginScreen')}>
-                <Text style={loginStyles.newUserbuttomText}>Login</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+                <FormNewUserbuttomText>Login</FormNewUserbuttomText>
+              </FormButtonToNav>
+            </FormBottomContainer>
+          </FormContainer>
         </Background>
       </KeyboardAvoidingView>
     </>

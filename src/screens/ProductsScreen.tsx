@@ -1,17 +1,21 @@
 import React from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useProducts} from '../hooks/useProducts';
 import {ProductItem} from '../components/ProductItem';
-import {ItemSeparator} from '../components/ItemSeparator';
+import {ItemSeparator} from '../theme/components/ItemSeparator';
+import {ScreenContainer} from '../theme/defaultStlyes';
+import {useTheme} from 'styled-components';
 
 interface ProuductsProps
   extends NativeStackScreenProps<ProductsStackParams, 'ProductsScreen'> {}
 
 export const ProductsScreen = ({}: ProuductsProps) => {
   const {top} = useSafeAreaInsets();
+  const {colors} = useTheme();
+
   const {
     products,
     refreshing,
@@ -21,21 +25,15 @@ export const ProductsScreen = ({}: ProuductsProps) => {
   } = useProducts();
 
   return (
-    <View
-      style={{
-        marginTop: refreshing ? top + 20 : 0,
-        flex: 1,
-        marginHorizontal: 10,
-      }}>
+    <ScreenContainer refreshing={refreshing} top={top}>
       <FlatList
-        style={{marginTop: 10}}
         refreshControl={
           <RefreshControl
             refreshing={refreshing || loading}
             onRefresh={loadProductsFromBackend}
             progressViewOffset={10}
-            progressBackgroundColor="#205375"
-            colors={['#EFEFEF', '#F66B0E']}
+            progressBackgroundColor={colors.foreground}
+            colors={[colors.text, colors.primary]}
           />
         }
         data={products}
@@ -45,6 +43,6 @@ export const ProductsScreen = ({}: ProuductsProps) => {
         )}
         ItemSeparatorComponent={ItemSeparator}
       />
-    </View>
+    </ScreenContainer>
   );
 };

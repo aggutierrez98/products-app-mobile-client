@@ -1,12 +1,7 @@
 // Modal.js
 import React from 'react';
-import {
-  TouchableWithoutFeedback,
-  StyleSheet,
-  Modal,
-  View,
-  ViewStyle,
-} from 'react-native';
+import {TouchableWithoutFeedback, Modal, View, ViewStyle} from 'react-native';
+import {ModalContent, ModalOverlay} from '../theme/components/CustomModal';
 
 interface Props {
   visible: boolean;
@@ -35,29 +30,10 @@ export const MyModal = ({
         onRequestClose={dismiss}
         animationType={animationType}>
         <TouchableWithoutFeedback onPress={dismiss}>
-          <View style={{...defaultStyles.modalOverlay, ...overlayStyles}} />
+          <ModalOverlay style={{...overlayStyles}} />
         </TouchableWithoutFeedback>
-        <View style={{...defaultStyles.modalContent, ...modalStyles}}>
-          {children}
-        </View>
+        <ModalContent style={{...modalStyles}}>{children}</ModalContent>
       </Modal>
     </View>
   );
 };
-
-const defaultStyles = StyleSheet.create({
-  modalContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignSelf: 'center',
-  },
-  modalOverlay: {
-    flexDirection: 'column',
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-});

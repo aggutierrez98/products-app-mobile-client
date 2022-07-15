@@ -1,6 +1,9 @@
 import React from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import Text from './CustomText';
+import {
+  ModalButton,
+  ButtonsContainer,
+} from '../theme/components/ModalEditPhoto';
+import {ButtonSaveText, defaultStyles} from '../theme/defaultStlyes';
 import {MyModal} from './CustomModal';
 
 interface Props {
@@ -21,53 +24,17 @@ export const ModalEditPhoto = ({
       visible={modalVisible}
       dismiss={closeModal}
       modalStyles={{
-        width: 270,
-        flex: 0,
-        marginTop: 170,
+        width: 260,
+        marginTop: -400,
       }}>
-      <View style={styles.modalContent}>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.buttonStyle}
-          onPress={takePhoto}>
-          <Text style={styles.buttonText}>Camera</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.buttonStyle}
-          onPress={takePhotoFromGallery}>
-          <Text style={styles.buttonText}>Gallery</Text>
-        </TouchableOpacity>
-      </View>
+      <ButtonsContainer style={defaultStyles.shadowBox}>
+        <ModalButton activeOpacity={0.8} onPress={takePhoto}>
+          <ButtonSaveText>Camera</ButtonSaveText>
+        </ModalButton>
+        <ModalButton activeOpacity={0.8} onPress={takePhotoFromGallery}>
+          <ButtonSaveText>Gallery</ButtonSaveText>
+        </ModalButton>
+      </ButtonsContainer>
     </MyModal>
   );
 };
-
-const styles = StyleSheet.create({
-  modalContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#112B3C',
-    borderRadius: 10,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  buttonStyle: {
-    backgroundColor: '#F66B0E',
-    width: 100,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    height: 40,
-  },
-  buttonText: {fontSize: 20, fontFamily: 'RobotoCondensed-Regular'},
-});

@@ -2,7 +2,7 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {LoginScreen} from '../screens/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen';
-import {Loading} from '../screens/Loading';
+import {Loading} from '../components/Loading';
 import ProtectedNavigator from './ProtectedNavigator';
 import {useAuth} from '../hooks/useAuth';
 
@@ -19,11 +19,7 @@ export const MainNavigator = () => {
 
   return (
     <>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          contentStyle: {backgroundColor: '#EFEFEF'},
-        }}>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         {!user ? (
           <>
             <Stack.Screen name="LoginScreen" component={LoginScreen} />

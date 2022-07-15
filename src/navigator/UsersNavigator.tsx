@@ -7,6 +7,7 @@ import {ProtectedNavigationParams} from './ProtectedNavigator';
 import {UsersScreen} from '../screens/UsersScreen';
 import {UserScreen} from '../screens/UserScreen';
 import {Header} from '../components/Header';
+import {useTheme} from 'styled-components';
 
 export type UsersStackParams = {
   UsersScreen: undefined;
@@ -19,6 +20,8 @@ interface NavProps
   extends NativeStackScreenProps<ProtectedNavigationParams, 'UsersNavigator'> {}
 
 export const UsersNavigator = ({}: NavProps) => {
+  const {colors} = useTheme();
+
   return (
     <Stack.Navigator
       screenOptions={({route: {params, name}}) => {
@@ -29,7 +32,7 @@ export const UsersNavigator = ({}: NavProps) => {
               backButton={name === 'UserScreen'}
             />
           ),
-          contentStyle: {backgroundColor: '#112B3C'},
+          contentStyle: {backgroundColor: colors.background},
         };
       }}>
       <Stack.Screen name="UsersScreen" component={UsersScreen} />

@@ -1,24 +1,21 @@
 import {Picker} from '@react-native-picker/picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {FadeInImage} from '../components/FadeInImage';
-import {componentStyles} from '../components/styles';
+import {Platform, RefreshControl, ScrollView} from 'react-native';
 import {useUser} from '../hooks/useUser';
 import {UsersStackParams} from '../navigator/UsersNavigator';
-import {Loading} from './Loading';
-import Text from '../components/CustomText';
+import {Loading} from '../components/Loading';
 import {ModalEditPhoto} from '../components/ModalEditPhoto';
+import {useTheme} from 'styled-components';
+import {
+  Button,
+  FormContainer,
+  Input,
+  Label,
+  PickerContainer,
+} from '../theme/screens/DetailScreen';
+import {ButtonSaveText} from '../theme/defaultStlyes';
+import {UserImage} from '../components/UserImage';
 
 interface Props
   extends NativeStackScreenProps<UsersStackParams, 'UserScreen'> {}
@@ -45,6 +42,7 @@ export const UserScreen = ({
     takePhoto,
     takePhotoFromGallery,
   } = useUser(idFromParams, nameFromParams);
+  const {colors} = useTheme();
 
   return (
     <>
@@ -54,81 +52,50 @@ export const UserScreen = ({
             refreshing={refreshing}
             onRefresh={refetchUser}
             progressViewOffset={10}
-            progressBackgroundColor="#205375"
-            colors={['#EFEFEF', '#F66B0E']}
+            progressBackgroundColor={colors.foreground}
+            colors={[colors.text, colors.primary]}
           />
         }>
-        <KeyboardAvoidingView
-          style={styles.container}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          {loading ? (
-            <ActivityIndicator
-              size="large"
-              color="#EFEFEF"
-              style={{
-                height: 280,
-              }}
-            />
-          ) : (
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={componentStyles.avatarContainer}
-              onPress={() => {
-                openModal();
-              }}>
-              <FadeInImage
-                source={
-                  tempImage || user?.image
-                    ? {
-                        uri: tempImage?.uri || user?.image,
-                      }
-                    : require('../assets/avatar-placeholder.png')
-                }
-                style={componentStyles.avatar}
-              />
-            </TouchableOpacity>
-          )}
+        <UserImage
+          loading={loading}
+          image={user?.image}
+          tempImage={tempImage?.uri}
+          openModal={openModal}
+        />
 
-          <Text style={styles.label}>User Email:</Text>
-          <Text style={styles.emailLabel}>{user.email}</Text>
+        <FormContainer behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <Label>User Email:</Label>
+          <Input>{user.email}</Input>
 
-          <Text style={styles.label}>User Name</Text>
-          <TextInput
+          <Label>User Name</Label>
+          <Input
             placeholder="Usuario"
-            style={styles.textInput}
-            placeholderTextColor="#b5b5b5"
+            placeholderTextColor={colors.placeholder}
             value={user?.name}
             onChangeText={value => onChange(value, 'name')}
           />
-          <Text style={styles.label}>Seleccione el rol</Text>
-          <View style={styles.pickerContainer}>
+          <Label>Seleccione el rol</Label>
+          <PickerContainer>
             <Picker
               selectedValue={user?.role}
-              style={styles.pickerStyle}
               onValueChange={itemValue => {
                 onChange(itemValue, 'role');
               }}>
               {roles?.map(role => (
-                <Picker.Item
-                  style={styles.pickerItem}
-                  label={role.name}
-                  value={role.id}
-                  key={role.id}
-                />
+                <Picker.Item label={role.name} value={role.id} key={role.id} />
               ))}
             </Picker>
-          </View>
+          </PickerContainer>
 
-          <TouchableOpacity
+          <Button
             activeOpacity={0.8}
-            style={styles.buttonStyle}
             onPress={async () => {
               await updateUserFunction();
               navigation.goBack();
             }}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </KeyboardAvoidingView>
+            <ButtonSaveText>Save</ButtonSaveText>
+          </Button>
+        </FormContainer>
 
         <ModalEditPhoto
           modalVisible={modalVisible}
@@ -141,55 +108,3 @@ export const UserScreen = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {flex: 1, marginTop: 10, marginHorizontal: 20},
-  label: {
-    fontSize: 18,
-    marginTop: 15,
-    marginBottom: 5,
-    fontFamily: 'RobotoCondensed-Bold',
-  },
-  emailLabel: {
-    marginBottom: 10,
-    fontSize: 15,
-  },
-  pickerContainer: {
-    borderRadius: 25,
-    borderColor: '#205375',
-    borderWidth: 1,
-    marginBottom: 20,
-    paddingLeft: 5,
-  },
-  pickerStyle: {
-    fontSize: 18,
-  },
-  pickerItem: {
-    fontFamily: 'RobotoCondensed-Light',
-    color: '#EFEFEF',
-  },
-  buttonStyle: {
-    marginVertical: 20,
-    backgroundColor: '#F66B0E',
-    // backgroundColor: '#205375',
-    width: '95%',
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    height: 40,
-  },
-  buttonText: {fontSize: 20, fontFamily: 'RobotoCondensed-Bold'},
-  textInput: {
-    color: '#EFEFEF',
-    fontFamily: 'RobotoCondensed-Light',
-    borderWidth: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-    borderRadius: 20,
-    borderColor: '#205375',
-    height: 45,
-    marginTop: 5,
-    marginBottom: 15,
-  },
-});

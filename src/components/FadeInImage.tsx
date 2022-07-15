@@ -1,14 +1,11 @@
 import React, {useState} from 'react';
+import {Animated, ImageStyle, ImageURISource, StyleProp} from 'react-native';
+import {useAnimation} from '../hooks/useAnimation';
 import {
   ActivityIndicator,
-  Animated,
-  ImageStyle,
-  ImageURISource,
-  StyleProp,
-  View,
-} from 'react-native';
-import {useAnimation} from '../hooks/useAnimation';
-import {componentStyles} from './styles';
+  ImageContainer,
+} from '../theme/components/FadeInImage';
+import {defaultStyles} from '../theme/defaultStlyes';
 
 interface Props {
   source: ImageURISource;
@@ -29,21 +26,8 @@ export const FadeInImage = ({source, style = {}}: Props) => {
   };
 
   return (
-    <View
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        ...componentStyles.shadowStyle,
-        ...(style as any),
-      }}>
-      {isLoading && (
-        <ActivityIndicator
-          style={{position: 'absolute'}}
-          color="grey"
-          size={30}
-        />
-      )}
-
+    <ImageContainer style={defaultStyles.shadowBox}>
+      {isLoading && <ActivityIndicator />}
       <Animated.Image
         source={source}
         onError={onError}
@@ -53,6 +37,6 @@ export const FadeInImage = ({source, style = {}}: Props) => {
           opacity,
         }}
       />
-    </View>
+    </ImageContainer>
   );
 };

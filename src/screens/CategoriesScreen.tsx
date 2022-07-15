@@ -1,29 +1,23 @@
 import React, {useEffect} from 'react';
-import {
-  Alert,
-  FlatList,
-  RefreshControl,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, FlatList, RefreshControl} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {DrawerScreenProps} from '@react-navigation/drawer';
-import {MyModal} from '../components/CustomModal';
 import {useCategory} from '../hooks/useCategory';
-import {categoriesStyles} from '../theme/categoriesTheme';
 import {ProtectedNavigationParams} from '../navigator/ProtectedNavigator';
 import {Header} from '../components/Header';
 import {CategoryItem} from '../components/CategoryItem';
-import {ItemSeparator} from '../components/ItemSeparator';
-import Text from '../components/CustomText';
-import {Loading} from './Loading';
+import {Loading} from '../components/Loading';
+import {ItemSeparator} from '../theme/components/ItemSeparator';
+import {ScreenContainer} from '../theme/defaultStlyes';
+import {useTheme} from 'styled-components';
+import {CategoriesModal} from '../components/CategoriesModal';
 
 interface Props
   extends DrawerScreenProps<ProtectedNavigationParams, 'CategoriesScreen'> {}
 
 export const CategoriesScreen = ({navigation}: Props) => {
   const {top} = useSafeAreaInsets();
+  const {colors} = useTheme();
 
   const {
     categories,
@@ -68,21 +62,15 @@ export const CategoriesScreen = ({navigation}: Props) => {
 
   return (
     <>
-      <View
-        style={{
-          marginTop: refreshing ? top + 20 : 0,
-          flex: 1,
-          marginHorizontal: 10,
-        }}>
+      <ScreenContainer refreshing={refreshing} top={top}>
         <FlatList
-          style={{marginTop: 10}}
           refreshControl={
             <RefreshControl
               refreshing={refreshing || loading}
               onRefresh={loadProductsFromBackend}
               progressViewOffset={10}
-              progressBackgroundColor="#205375"
-              colors={['#EFEFEF', '#F66B0E']}
+              progressBackgroundColor={colors.foreground}
+              colors={[colors.text, colors.primary]}
             />
           }
           data={categories}
@@ -96,27 +84,16 @@ export const CategoriesScreen = ({navigation}: Props) => {
           )}
           ItemSeparatorComponent={ItemSeparator}
         />
-      </View>
-      <MyModal visible={modalVisible} dismiss={closeModal}>
-        <View style={categoriesStyles.modalContent}>
-          <Text style={categoriesStyles.label}>{modalData.title}</Text>
-          <TextInput
-            placeholder="Category"
-            style={categoriesStyles.textInput}
-            placeholderTextColor="grey"
-            value={categoryName}
-            onChangeText={handleNameChange}
-          />
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={[categoriesStyles.button, categoriesStyles.buttonSave]}
-            onPress={() => {
-              saveOrUpdateCategory(modalData.categoryData?.id);
-            }}>
-            <Text style={categoriesStyles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-      </MyModal>
+      </ScreenContainer>
+
+      <CategoriesModal
+        categoryName={categoryName}
+        closeModal={closeModal}
+        modalData={modalData}
+        modalVisible={modalVisible}
+        handleNameChange={handleNameChange}
+        saveOrUpdateCategory={saveOrUpdateCategory}
+      />
 
       {loadingMutation && <Loading />}
     </>

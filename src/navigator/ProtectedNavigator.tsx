@@ -11,6 +11,7 @@ import {CategoriesScreen} from '../screens/CategoriesScreen';
 import {UsersNavigator} from './UsersNavigator';
 import {MainNavigationParams} from './MainNavigator';
 import {Header} from '../components/Header';
+import {useTheme} from 'styled-components';
 
 export type ProtectedNavigationParams = {
   ProductsNavigator: undefined;
@@ -26,6 +27,7 @@ interface Props
 
 const ProtectedNavigator = ({}: Props) => {
   const {width} = useWindowDimensions();
+  const {colors} = useTheme();
 
   return (
     <Drawer.Navigator
@@ -33,7 +35,7 @@ const ProtectedNavigator = ({}: Props) => {
       screenOptions={{
         headerShown: false,
         drawerType: width >= 768 ? 'permanent' : 'front',
-        sceneContainerStyle: {backgroundColor: '#112B3C'},
+        sceneContainerStyle: {backgroundColor: colors.background},
       }}>
       <Drawer.Screen name="ProductsNavigator" component={ProductsNavigator} />
       <Drawer.Screen name="UsersNavigator" component={UsersNavigator} />

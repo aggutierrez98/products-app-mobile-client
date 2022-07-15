@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {FlatList, RefreshControl, View} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {UsersStackParams} from '../navigator/UsersNavigator';
@@ -7,13 +7,17 @@ import {useUsers} from '../hooks/useUsers';
 import {Picker} from '@react-native-picker/picker';
 import {Header} from '../components/Header';
 import {UserItem} from '../components/UserItem';
-import {ItemSeparator} from '../components/ItemSeparator';
+import {ItemSeparator} from '../theme/components/ItemSeparator';
+import {useTheme} from 'styled-components';
+import {ScreenContainer} from '../theme/defaultStlyes';
 
 interface Props
   extends NativeStackScreenProps<UsersStackParams, 'UsersScreen'> {}
 
 export const UsersScreen = ({navigation}: Props) => {
   const {top} = useSafeAreaInsets();
+  const {colors} = useTheme();
+
   const {
     users,
     refreshing,
@@ -51,21 +55,15 @@ export const UsersScreen = ({navigation}: Props) => {
   }, [options, navigation, selectedFilter, changeFilter]);
 
   return (
-    <View
-      style={{
-        marginTop: refreshing ? top + 20 : 0,
-        flex: 1,
-        marginHorizontal: 10,
-      }}>
+    <ScreenContainer top={top} refreshing={refreshing}>
       <FlatList
-        style={{marginTop: 10}}
         refreshControl={
           <RefreshControl
             refreshing={refreshing || loading}
             onRefresh={loadProductsFromBackend}
             progressViewOffset={10}
-            progressBackgroundColor="#205375"
-            colors={['#EFEFEF', '#F66B0E']}
+            progressBackgroundColor={colors.foreground}
+            colors={[colors.text, colors.primary]}
           />
         }
         data={users}
@@ -79,6 +77,6 @@ export const UsersScreen = ({navigation}: Props) => {
         )}
         ItemSeparatorComponent={ItemSeparator}
       />
-    </View>
+    </ScreenContainer>
   );
 };
