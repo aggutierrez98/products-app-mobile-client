@@ -13,15 +13,14 @@ import {
   FormNewUserbuttomText,
   FormPassIcon,
   KeyboardAvoidingView,
-} from '../theme/screens/AuthScreenStyles';
-import {
   FormContainer,
   FormLabel,
   FormTitle,
   FormInput,
   FormShowPassButton,
   FormPassInputContainer,
-} from '../theme/screens/AuthScreenStyles';
+} from '../theme/authScreenStyles';
+
 import {useTheme} from 'styled-components';
 
 interface Props extends NativeStackScreenProps<any, any> {}

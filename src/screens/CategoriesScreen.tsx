@@ -5,12 +5,12 @@ import {DrawerScreenProps} from '@react-navigation/drawer';
 import {useCategory} from '../hooks/useCategory';
 import {ProtectedNavigationParams} from '../navigator/ProtectedNavigator';
 import {Header} from '../components/Header';
-import {CategoryItem} from '../components/CategoryItem';
+import {CategoryItem} from '../components/categories/CategoryItem';
 import {Loading} from '../components/Loading';
-import {ItemSeparator} from '../theme/components/ItemSeparator';
+import {ItemSeparator} from '../components/ItemSeparator';
 import {ScreenContainer} from '../theme/defaultStlyes';
 import {useTheme} from 'styled-components';
-import {CategoriesModal} from '../components/CategoriesModal';
+import {CategoriesModal} from '../components/categories/CategoriesModal';
 
 interface Props
   extends DrawerScreenProps<ProtectedNavigationParams, 'CategoriesScreen'> {}

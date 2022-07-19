@@ -5,7 +5,6 @@ import {Background} from '../components/Background';
 import {Logo} from '../components/Logo';
 import {useAuth} from '../hooks/useAuth';
 import {Loading} from '../components/Loading';
-import {FormButtomText} from '../theme/screens/AuthScreenStyles';
 import {
   FormContainer,
   KeyboardAvoidingView,
@@ -19,7 +18,8 @@ import {
   FormButtonToNav,
   FormNewUserbuttomText,
   FormButton,
-} from '../theme/screens/AuthScreenStyles';
+  FormButtomText,
+} from '../theme/authScreenStyles';
 import {useTheme} from 'styled-components';
 
 interface Props extends NativeStackScreenProps<any, any> {}

@@ -8,10 +8,14 @@ import {
 import {GET_CATEGORIES} from '../graphql/queries';
 import {CURRENT_USER} from '../graphql/queries/auth';
 import {
+  updateCategoryUpdateCache,
+  createCategoryUpdateCache,
+  deleteCategoryUpdateCache,
+} from '../helpers/categories';
+import {
   GetCategoriesRes,
   GetCategoriesResponse,
   CurrentUserRes,
-  Category,
 } from '../interfaces';
 
 export const useCategory = () => {
@@ -94,28 +98,9 @@ export const useCategory = () => {
             user: userData?.currentUser?.id,
           },
         },
+        update: updateCategoryUpdateCache,
         onError: err => {
           console.log({err});
-        },
-        update: (cache, {data: newCategoryData}) => {
-          cache.modify({
-            fields: {
-              getCategories(oldCategoriesData) {
-                const newCategories = oldCategoriesData.categories.map(
-                  (oldCategory: Category) => {
-                    if (oldCategory.id === newCategoryData.id) {
-                      return newCategoryData;
-                    } else return oldCategory;
-                  },
-                );
-
-                return {
-                  ...oldCategoriesData,
-                  categories: newCategories,
-                };
-              },
-            },
-          });
         },
       });
     } else {
@@ -128,26 +113,9 @@ export const useCategory = () => {
             user: userData?.currentUser?.id,
           },
         },
+        update: createCategoryUpdateCache,
         onError: err => {
           console.log({err});
-        },
-        update: (cache, {data: newCategoryData}) => {
-          cache.modify({
-            fields: {
-              getCategories(oldCategoriesData) {
-                if (newCategoryData.createCategory.error)
-                  return oldCategoriesData;
-
-                return {
-                  ...oldCategoriesData,
-                  categories: [
-                    ...oldCategoriesData.categories,
-                    {...newCategoryData},
-                  ],
-                };
-              },
-            },
-          });
         },
       });
     }
@@ -162,17 +130,9 @@ export const useCategory = () => {
       onCompleted: () => {
         reobserve();
       },
+      update: deleteCategoryUpdateCache,
       onError: err => {
         console.log({err});
-      },
-      update: (cache, {data: categoryToDelete}) => {
-        const idToDelete = categoryToDelete.deleteCategory.id;
-        const normalizedId = cache.identify({
-          id: idToDelete,
-          __typename: 'Category',
-        });
-        cache.evict({id: normalizedId});
-        cache.gc();
       },
     });
     closeModal();

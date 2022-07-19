@@ -15,6 +15,9 @@ export interface Product {
   active: boolean;
   user: User;
   category: Category;
+  error?: {
+    message: string;
+  };
 }
 
 export interface GetProductsResponse {
@@ -35,3 +38,13 @@ export type GetProductsRes = QueryResult<
   GetProductsResponse,
   {limit: number; skip: number}
 >;
+
+export interface CreateProductResponse {
+  createProduct: Product;
+}
+export interface UpdateProductResponse {
+  updateProduct: Product;
+}
+export interface DeleteProductResponse {
+  deleteProduct: Product;
+}

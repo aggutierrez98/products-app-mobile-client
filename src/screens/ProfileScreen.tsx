@@ -9,7 +9,7 @@ import {
   AvatarContainer,
   ProfileContainer,
   Title,
-} from '../theme/screens/ProfileScreen';
+} from '../theme/profileScreenStyles';
 
 export const ProfileScreen = () => {
   const {data: userData}: QueryResult<CurrentUserResponse> =

@@ -35,6 +35,7 @@ export const ButtonSave = styled.TouchableOpacity`
 `;
 
 export const ButtonSaveText = styled.Text`
+  color: ${p => p.theme.colors.text};
   font-family: ${p => p.theme.fonts.bold};
   font-size: 18px;
 `;

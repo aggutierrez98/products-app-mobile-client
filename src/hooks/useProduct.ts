@@ -1,22 +1,18 @@
 import {useMutation, useQuery} from '@apollo/client';
 import {useEffect, useState} from 'react';
-import {
-  Asset,
-  launchCamera,
-  launchImageLibrary,
-} from 'react-native-image-picker';
+import {Asset} from 'react-native-image-picker';
 import {CREATE_PRODUCT, UPDATE_PRODUCT} from '../graphql/mutations';
 import {GET_CATEGORIES, GET_PRODUCT} from '../graphql/queries';
 import {useForm} from './useForm';
 import {ReactNativeFile} from 'apollo-upload-client';
 import {UPDATE_IMAGE_CLOUDINARY} from '../graphql/mutations';
 import {CURRENT_USER} from '../graphql/queries/auth';
+import {CurrentUserRes, GetCategoriesRes, GetProductRes} from '../interfaces';
 import {
-  CurrentUserRes,
-  GetCategoriesRes,
-  GetProductRes,
-  Product,
-} from '../interfaces';
+  createProductUpdateCache,
+  updateProductUpdateCache,
+} from '../graphql/cache/products';
+import {takePhoto, takePhotoFromGallery} from '../helpers/utils';
 
 export const useProduct = (id: string, name: string) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,7 +20,7 @@ export const useProduct = (id: string, name: string) => {
   const closeModal = () => setModalVisible(false);
   const openModal = () => setModalVisible(true);
 
-  const [tempImage, setTempImage] = useState<Asset>();
+  const [tempImage, setTempImage] = useState<Asset | null>();
 
   const {
     form: product,
@@ -81,26 +77,7 @@ export const useProduct = (id: string, name: string) => {
         onError: error => {
           console.log({error});
         },
-        update: (cache, {data: newDataOfProduct}) => {
-          cache.modify({
-            fields: {
-              getProducts(oldGetProductData) {
-                const newProducts = oldGetProductData.products.map(
-                  (oldProduct: Product) => {
-                    if (oldProduct.id === newDataOfProduct.id) {
-                      return newDataOfProduct;
-                    } else return oldProduct;
-                  },
-                );
-
-                return {
-                  ...oldGetProductData,
-                  products: newProducts,
-                };
-              },
-            },
-          });
-        },
+        update: updateProductUpdateCache,
       });
 
       if (tempImage) uploadImage(tempImage);
@@ -118,20 +95,7 @@ export const useProduct = (id: string, name: string) => {
         onError: error => {
           console.log({error});
         },
-        update: (cache, {data: newProductData}) => {
-          cache.modify({
-            fields: {
-              getProducts(oldProductsData) {
-                if (newProductData.createProduct.error) return oldProductsData;
-
-                return {
-                  ...oldProductsData,
-                  products: [...oldProductsData.products, {...newProductData}],
-                };
-              },
-            },
-          });
-        },
+        update: createProductUpdateCache,
       });
     }
   };
@@ -151,59 +115,20 @@ export const useProduct = (id: string, name: string) => {
       onError: error => {
         console.log({error});
       },
-      update: (cache, {data: newProductData}) => {
-        cache.modify({
-          fields: {
-            getProducts(oldGetProductData) {
-              const newProducts = oldGetProductData.products.map(
-                (oldProduct: Product) => {
-                  if (oldProduct.id === newProductData.id) {
-                    return newProductData;
-                  } else return oldProduct;
-                },
-              );
-
-              return {
-                ...oldGetProductData,
-                products: newProducts,
-              };
-            },
-          },
-        });
-      },
+      update: updateProductUpdateCache,
     });
   };
 
-  const takePhoto = () => {
-    launchCamera(
-      {
-        mediaType: 'photo',
-        quality: 0.5,
-      },
-      resp => {
-        if (resp.didCancel) return;
-        if (!resp.assets || resp.assets.length === 0) return;
-
-        setTempImage(resp.assets[0]);
-        closeModal();
-      },
-    );
+  const takePhotoFromGalleryHandler = async () => {
+    const imageAsset = await takePhotoFromGallery();
+    setTempImage(imageAsset);
+    closeModal();
   };
 
-  const takePhotoFromGallery = () => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-        quality: 0.5,
-      },
-      resp => {
-        if (resp.didCancel) return;
-        if (!resp.assets || resp.assets.length === 0) return;
-
-        setTempImage(resp.assets[0]);
-        closeModal();
-      },
-    );
+  const takePhotoHandler = async () => {
+    const imageAsset = await takePhoto();
+    setTempImage(imageAsset);
+    closeModal();
   };
 
   useEffect(() => {
@@ -232,8 +157,8 @@ export const useProduct = (id: string, name: string) => {
     setFormValues,
     onChange,
     saveOrUpdate,
-    takePhoto,
-    takePhotoFromGallery,
+    takePhotoHandler,
+    takePhotoFromGalleryHandler,
     refetchProduct,
   };
 };

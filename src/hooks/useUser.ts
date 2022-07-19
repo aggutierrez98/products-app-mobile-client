@@ -1,20 +1,18 @@
 import {useMutation, useQuery} from '@apollo/client';
 import {ReactNativeFile} from 'apollo-upload-client';
 import {useEffect, useState} from 'react';
-import {
-  Asset,
-  launchCamera,
-  launchImageLibrary,
-} from 'react-native-image-picker';
+import {Asset} from 'react-native-image-picker';
+import {updateUserUpdateCache} from '../graphql/cache/users';
 import {UPDATE_IMAGE_CLOUDINARY} from '../graphql/mutations';
 import {UPDATE_USER} from '../graphql/mutations/users';
 import {GET_USER} from '../graphql/queries';
 import {GET_ROLES} from '../graphql/queries/roles';
+import {takePhoto, takePhotoFromGallery} from '../helpers/utils';
 import {GetUserRes, GetRolesRes} from '../interfaces';
 import {useForm} from './useForm';
 
 export const useUser = (id: string, name: string) => {
-  const [tempImage, setTempImage] = useState<Asset>();
+  const [tempImage, setTempImage] = useState<Asset | null>();
   const [modalVisible, setModalVisible] = useState(false);
   const closeModal = () => setModalVisible(false);
   const openModal = () => setModalVisible(true);
@@ -97,57 +95,20 @@ export const useUser = (id: string, name: string) => {
       onError: error => {
         console.log({error});
       },
-      update: (cache, {data: newUserData}) => {
-        cache.modify({
-          fields: {
-            getUsers(oldGetUsersData) {
-              const newUsers = oldGetUsersData.users.map((oldUser: any) => {
-                if (oldUser.id === newUserData.id) {
-                  return newUserData;
-                } else return oldUser;
-              });
-
-              return {
-                ...oldGetUsersData,
-                users: newUsers,
-              };
-            },
-          },
-        });
-      },
+      update: updateUserUpdateCache,
     });
   };
 
-  const takePhoto = () => {
-    launchCamera(
-      {
-        mediaType: 'photo',
-        quality: 0.5,
-      },
-      resp => {
-        if (resp.didCancel) return;
-        if (!resp.assets || resp.assets.length === 0) return;
-
-        setTempImage(resp.assets[0]);
-        closeModal();
-      },
-    );
+  const takePhotoFromGalleryHandler = async () => {
+    const imageAsset = await takePhotoFromGallery();
+    setTempImage(imageAsset);
+    closeModal();
   };
 
-  const takePhotoFromGallery = () => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-        quality: 0.5,
-      },
-      resp => {
-        if (resp.didCancel) return;
-        if (!resp.assets || resp.assets.length === 0) return;
-
-        setTempImage(resp.assets[0]);
-        closeModal();
-      },
-    );
+  const takePhotoHandler = async () => {
+    const imageAsset = await takePhoto();
+    setTempImage(imageAsset);
+    closeModal();
   };
 
   return {
@@ -162,8 +123,8 @@ export const useUser = (id: string, name: string) => {
     closeModal,
     updateUserFunction,
     onChange,
-    takePhoto,
-    takePhotoFromGallery,
+    takePhotoHandler,
+    takePhotoFromGalleryHandler,
     refetchUser,
   };
 };

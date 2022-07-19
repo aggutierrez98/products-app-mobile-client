@@ -19,7 +19,7 @@ import {
   Input,
   Label,
   PickerContainer,
-} from '../theme/screens/DetailScreen';
+} from '../theme/detailScreenStyles';
 import {useTheme} from 'styled-components';
 import {ButtonSaveText} from '../theme/defaultStlyes';
 
@@ -44,8 +44,8 @@ export const ProductScreen = ({
     openModal,
     saveOrUpdate,
     onChange,
-    takePhoto,
-    takePhotoFromGallery,
+    takePhotoHandler,
+    takePhotoFromGalleryHandler,
     refetchProduct,
   } = useProduct(idFromParams, nameFromParams);
   const {colors} = useTheme();
@@ -70,6 +70,7 @@ export const ProductScreen = ({
           <>
             {loading ? (
               <ActivityIndicator
+                size="large"
                 style={{
                   height: 300,
                 }}
@@ -157,8 +158,8 @@ export const ProductScreen = ({
         <ModalEditPhoto
           closeModal={closeModal}
           modalVisible={modalVisible}
-          takePhoto={takePhoto}
-          takePhotoFromGallery={takePhotoFromGallery}
+          takePhoto={takePhotoHandler}
+          takePhotoFromGallery={takePhotoFromGalleryHandler}
         />
       </ScrollView>
 

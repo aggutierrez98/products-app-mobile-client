@@ -13,9 +13,9 @@ import {
   Input,
   Label,
   PickerContainer,
-} from '../theme/screens/DetailScreen';
+} from '../theme/detailScreenStyles';
 import {ButtonSaveText} from '../theme/defaultStlyes';
-import {UserImage} from '../components/UserImage';
+import {UserImage} from '../components/users/UserImage';
 
 interface Props
   extends NativeStackScreenProps<UsersStackParams, 'UserScreen'> {}
@@ -39,8 +39,8 @@ export const UserScreen = ({
     refetchUser,
     onChange,
     updateUserFunction,
-    takePhoto,
-    takePhotoFromGallery,
+    takePhotoHandler,
+    takePhotoFromGalleryHandler,
   } = useUser(idFromParams, nameFromParams);
   const {colors} = useTheme();
 
@@ -100,8 +100,8 @@ export const UserScreen = ({
         <ModalEditPhoto
           modalVisible={modalVisible}
           closeModal={closeModal}
-          takePhoto={takePhoto}
-          takePhotoFromGallery={takePhotoFromGallery}
+          takePhoto={takePhotoHandler}
+          takePhotoFromGallery={takePhotoFromGalleryHandler}
         />
       </ScrollView>
       {loadingMutation && <Loading />}

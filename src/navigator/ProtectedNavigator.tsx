@@ -31,7 +31,7 @@ const ProtectedNavigator = ({}: Props) => {
 
   return (
     <Drawer.Navigator
-      drawerContent={props => <CustomDrawer {...props} />}
+      drawerContent={() => <CustomDrawer />}
       screenOptions={{
         headerShown: false,
         drawerType: width >= 768 ? 'permanent' : 'front',

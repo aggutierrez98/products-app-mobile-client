@@ -24,6 +24,9 @@ export interface User {
   image?: null;
   role: Role;
   active: Boolean;
+  // error?: {
+  //   message: string;
+  // };
 }
 
 export type GetUsersRes = QueryResult<
@@ -32,3 +35,13 @@ export type GetUsersRes = QueryResult<
 >;
 
 export type GetUserRes = QueryResult<GetUserResponse, {id: string}>;
+
+export interface UpdateUserResponse {
+  updateUser: User;
+}
+export interface ActivateUserResponse {
+  activateUser: User;
+}
+export interface DeleteUserResponse {
+  deleteUser: User;
+}

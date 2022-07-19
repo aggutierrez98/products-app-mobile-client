@@ -1,7 +1,9 @@
 import {useMutation, useQuery} from '@apollo/client';
 import {useEffect, useState} from 'react';
+import {loginUpdateCache, registerUpdateCache} from '../graphql/cache/auth';
 import {LOGIN, REGISTER} from '../graphql/mutations';
 import {CURRENT_USER} from '../graphql/queries/auth';
+import {registerOnCompleted, loginOnCompleted} from '../helpers/auth';
 import ExpireStorage from '../helpers/saveDataToStorage';
 import {CurrentUserResponse} from '../interfaces';
 import {useForm} from './useForm';
@@ -35,45 +37,10 @@ export const useAuth = () => {
     password: '',
   });
 
-  const [loginFunc, {data: loginData, loading: loginLoading}] = useMutation(
-    LOGIN,
-    {
-      update: (cache, {data}) => {
-        if (data.login.error) return;
-
-        cache.writeQuery({
-          query: CURRENT_USER,
-          data: {currentUser: data.login.user},
-        });
-      },
-      onCompleted: data => {
-        if (data.login.error) return;
-
-        ExpireStorage.setItem('x-token', data.login.token, 60);
-      },
-    },
-  );
-
+  const [loginFunc, {data: loginData, loading: loginLoading}] =
+    useMutation(LOGIN);
   const [register, {data: registerData, loading: registerLoading}] =
-    useMutation(REGISTER, {
-      update: (cache, {data}) => {
-        if (data.createUser.error) return;
-
-        cache.writeQuery({
-          query: CURRENT_USER,
-          data: {currentUser: data.createUser.user},
-        });
-      },
-      onCompleted: data => {
-        if (data.createUser.error) return;
-
-        const dataToStorage = {
-          id: data.login.user.id,
-          token: data.login.token,
-        };
-        ExpireStorage.setItem('x-token', dataToStorage, 60);
-      },
-    });
+    useMutation(REGISTER);
 
   useEffect(() => {
     if (loginData?.login.error || registerData?.createUser.error) {
@@ -89,11 +56,17 @@ export const useAuth = () => {
   const loginHandler = () => {
     loginFunc({
       variables: {email, password},
+      update: loginUpdateCache,
+      onCompleted: loginOnCompleted,
     });
   };
 
   const registerHandler = () => {
-    register({variables: {user: {name, email, password, role: 'USER_ROLE'}}});
+    register({
+      variables: {user: {name, email, password, role: 'USER_ROLE'}},
+      update: registerUpdateCache,
+      onCompleted: registerOnCompleted,
+    });
   };
 
   const logout = async () => {

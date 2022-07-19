@@ -1,5 +1,9 @@
 import {useMutation, useQuery} from '@apollo/client';
 import {useMemo, useState} from 'react';
+import {
+  activateUserUpdateCache,
+  deactivateUserUpdateCache,
+} from '../graphql/cache/users';
 import {ACTIVATE_USER, DEACTIVATE_USER} from '../graphql/mutations/users';
 import {GET_USERS} from '../graphql/queries';
 import {GetUsersRes} from '../interfaces';
@@ -54,24 +58,7 @@ export const useUsers = () => {
       onError: err => {
         console.log({err});
       },
-      update: (cache, {data: newUserData}) => {
-        cache.modify({
-          fields: {
-            getUsers(oldGetUsersData) {
-              const newUsers = oldGetUsersData.users.map((oldUser: any) => {
-                if (oldUser.id === newUserData.id) {
-                  return newUserData;
-                } else return oldUser;
-              });
-
-              return {
-                ...oldGetUsersData,
-                users: newUsers,
-              };
-            },
-          },
-        });
-      },
+      update: deactivateUserUpdateCache,
     });
   };
 
@@ -84,24 +71,7 @@ export const useUsers = () => {
       onError: err => {
         console.log({err});
       },
-      update: (cache, {data: newUserData}) => {
-        cache.modify({
-          fields: {
-            getUsers(oldGetUsersData) {
-              const newUsers = oldGetUsersData.users.map((oldUser: any) => {
-                if (oldUser.id === newUserData.id) {
-                  return newUserData;
-                } else return oldUser;
-              });
-
-              return {
-                ...oldGetUsersData,
-                users: newUsers,
-              };
-            },
-          },
-        });
-      },
+      update: activateUserUpdateCache,
     });
   };
 

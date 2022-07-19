@@ -1,5 +1,6 @@
 import {useMutation, useQuery} from '@apollo/client';
 import {useState} from 'react';
+import {deleteProductUpdateCache} from '../graphql/cache/products';
 import {DELETE_PRODUCT} from '../graphql/mutations';
 import {GET_PRODUCTS} from '../graphql/queries';
 import {GetProductsRes} from '../interfaces';
@@ -29,15 +30,7 @@ export const useProducts = () => {
       onError: err => {
         console.log({err});
       },
-      update: (cache, {data: productToDelete}) => {
-        const idToDelete = productToDelete.deleteProduct.id;
-        const normalizedId = cache.identify({
-          id: idToDelete,
-          __typename: 'Product',
-        });
-        cache.evict({id: normalizedId});
-        cache.gc();
-      },
+      update: deleteProductUpdateCache,
     });
   };
 

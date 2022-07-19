@@ -4,8 +4,8 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useProducts} from '../hooks/useProducts';
-import {ProductItem} from '../components/ProductItem';
-import {ItemSeparator} from '../theme/components/ItemSeparator';
+import {ProductItem} from '../components/products/ProductItem';
+import {ItemSeparator} from '../components/ItemSeparator';
 import {ScreenContainer} from '../theme/defaultStlyes';
 import {useTheme} from 'styled-components';
 

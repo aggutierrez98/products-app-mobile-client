@@ -6,8 +6,8 @@ import {UsersStackParams} from '../navigator/UsersNavigator';
 import {useUsers} from '../hooks/useUsers';
 import {Picker} from '@react-native-picker/picker';
 import {Header} from '../components/Header';
-import {UserItem} from '../components/UserItem';
-import {ItemSeparator} from '../theme/components/ItemSeparator';
+import {UserItem} from '../components/users/UserItem';
+import {ItemSeparator} from '../components/ItemSeparator';
 import {useTheme} from 'styled-components';
 import {ScreenContainer} from '../theme/defaultStlyes';
 
