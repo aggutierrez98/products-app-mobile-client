@@ -13,8 +13,8 @@ export const useAuth = () => {
     data: userData,
     loading: userLoading,
     refetch,
-    // // error,
     client,
+    error: userError,
   } = useQuery(CURRENT_USER);
   const user = (userData as CurrentUserResponse)?.currentUser;
 
@@ -30,28 +30,16 @@ export const useAuth = () => {
     }
   }, [client, refetch, user]);
 
-  const [error, setError] = useState(null);
   const {name, email, password, onChange} = useForm({
     name: '',
     email: '',
     password: '',
   });
 
-  const [loginFunc, {data: loginData, loading: loginLoading}] =
+  const [loginFunc, {loading: loginLoading, error: loginError}] =
     useMutation(LOGIN);
-  const [register, {data: registerData, loading: registerLoading}] =
+  const [register, {loading: registerLoading, error: registerError}] =
     useMutation(REGISTER);
-
-  useEffect(() => {
-    if (loginData?.login.error || registerData?.createUser.error) {
-      setError(
-        loginData?.login.error.message ||
-          registerData?.createUser.error.message,
-      );
-    } else {
-      setError(null);
-    }
-  }, [loginData?.login.error, registerData?.createUser.error]);
 
   const loginHandler = () => {
     loginFunc({
@@ -81,7 +69,7 @@ export const useAuth = () => {
     password,
     loading:
       loginLoading || registerLoading || userLoading || loadingFromRefetch,
-    inputError: error,
+    inputError: loginError || registerError || userError,
     onChange,
     loginHandler,
     registerHandler,

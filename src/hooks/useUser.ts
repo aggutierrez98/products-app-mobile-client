@@ -21,14 +21,17 @@ export const useUser = (id: string, name: string) => {
   const {
     data: userData,
     loading: loadingGet,
+    error: getUserError,
     refetch,
   }: GetUserRes = useQuery(GET_USER, {
     variables: {id},
   });
-  const [updateUser, {loading: loadingUpdate}] = useMutation(UPDATE_USER);
-  const [updateImage, {loading: loadingUpdateImage}] = useMutation(
-    UPDATE_IMAGE_CLOUDINARY,
-  );
+  const [updateUser, {loading: loadingUpdate, error: updateUserError}] =
+    useMutation(UPDATE_USER);
+  const [
+    updateImage,
+    {loading: loadingUpdateImage, error: updateUserImageError},
+  ] = useMutation(UPDATE_IMAGE_CLOUDINARY);
 
   const userFromApi = userData?.getUser;
   const {data: rolesData}: GetRolesRes = useQuery(GET_ROLES);
@@ -114,6 +117,7 @@ export const useUser = (id: string, name: string) => {
   return {
     tempImage,
     user,
+    error: getUserError || updateUserError || updateUserImageError,
     roles,
     loading: loadingGet,
     loadingMutation: loadingUpdate || loadingUpdateImage,

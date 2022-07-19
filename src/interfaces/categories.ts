@@ -13,9 +13,6 @@ export interface Category {
   id: string;
   name: string;
   user: User;
-  error?: {
-    message: string;
-  };
 }
 
 export type GetCategoriesRes = QueryResult<

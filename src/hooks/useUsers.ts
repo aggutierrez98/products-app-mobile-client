@@ -12,13 +12,17 @@ export const useUsers = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(0);
 
-  const [deactivateUser, {loading: loadingDeactivate}] =
-    useMutation(DEACTIVATE_USER);
-  const [activateUser, {loading: loadingActivate}] = useMutation(ACTIVATE_USER);
+  const [
+    deactivateUser,
+    {loading: loadingDeactivate, error: deactivateUserError},
+  ] = useMutation(DEACTIVATE_USER);
+  const [activateUser, {loading: loadingActivate, error: activateUserError}] =
+    useMutation(ACTIVATE_USER);
   const {
     data,
     refetch,
     reobserve,
+    error: getUsersError,
     loading: loadingGet,
   }: GetUsersRes = useQuery(GET_USERS, {
     fetchPolicy: 'cache-first',
@@ -77,6 +81,7 @@ export const useUsers = () => {
 
   return {
     users,
+    error: deactivateUserError || activateUserError || getUsersError,
     refreshing,
     options,
     loading: loadingDeactivate || loadingActivate || loadingGet,

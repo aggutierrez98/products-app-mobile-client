@@ -43,15 +43,19 @@ export const useProduct = (id: string, name: string) => {
     variables: {id: String(id) || null},
     skip: !id,
   });
-  const {data: categoriesData}: GetCategoriesRes = useQuery(GET_CATEGORIES, {});
+  const {data: categoriesData, error: getProductError}: GetCategoriesRes =
+    useQuery(GET_CATEGORIES, {});
   const {data: userData}: CurrentUserRes = useQuery(CURRENT_USER, {
     fetchPolicy: 'cache-only',
   });
-  const [createProduct, {loading: loadingCreate}] = useMutation(CREATE_PRODUCT);
-  const [updateProduct, {loading: loadingUpdate}] = useMutation(UPDATE_PRODUCT);
-  const [updateImage, {loading: loadingUpdateImage}] = useMutation(
-    UPDATE_IMAGE_CLOUDINARY,
-  );
+  const [createProduct, {loading: loadingCreate, error: createProductError}] =
+    useMutation(CREATE_PRODUCT);
+  const [updateProduct, {loading: loadingUpdate, error: updateProductError}] =
+    useMutation(UPDATE_PRODUCT);
+  const [
+    updateImage,
+    {loading: loadingUpdateImage, error: updateImageProductError},
+  ] = useMutation(UPDATE_IMAGE_CLOUDINARY);
 
   const refetchProduct = async () => {
     setRefreshing(true);
@@ -144,6 +148,11 @@ export const useProduct = (id: string, name: string) => {
 
   return {
     product,
+    error:
+      getProductError ||
+      createProductError ||
+      updateProductError ||
+      updateImageProductError,
     categories,
     tempImage,
     loading: loadingGet,

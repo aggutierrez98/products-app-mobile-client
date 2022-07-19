@@ -3,22 +3,15 @@ import {gql} from '@apollo/client';
 export const CREATE_PRODUCT = gql`
   mutation createProduct($product: AddProductInput!) {
     createProduct(product: $product) {
-      ... on Product {
+      id
+      name
+      user {
         id
         name
-        user {
-          id
-          name
-          email
-          image
-        }
-        active
+        email
+        image
       }
-      ... on InputError {
-        error {
-          message
-        }
-      }
+      active
     }
   }
 `;
@@ -26,39 +19,32 @@ export const CREATE_PRODUCT = gql`
 export const UPDATE_PRODUCT = gql`
   mutation updateProduct($product: UpdateProductInput!) {
     updateProduct(product: $product) {
-      ... on Product {
-        name
-        description
-        price
-        available
+      name
+      description
+      price
+      available
+      id
+      active
+      user {
         id
+        name
+        role {
+          id
+          name
+        }
+      }
+      category {
+        id
+        name
         active
         user {
           id
           name
+          email
           role {
             id
             name
           }
-        }
-        category {
-          id
-          name
-          active
-          user {
-            id
-            name
-            email
-            role {
-              id
-              name
-            }
-          }
-        }
-      }
-      ... on InputError {
-        error {
-          message
         }
       }
     }
@@ -122,11 +108,6 @@ export const UPDATE_IMAGE_CLOUDINARY = gql`
         active
         google
       }
-      ... on InputError {
-        error {
-          message
-        }
-      }
     }
   }
 `;
@@ -184,11 +165,6 @@ export const UPDATE_IMAGE = gql`
         active
         google
       }
-      ... on InputError {
-        error {
-          message
-        }
-      }
     }
   }
 `;
@@ -196,14 +172,28 @@ export const UPDATE_IMAGE = gql`
 export const DELETE_PRODUCT = gql`
   mutation DeleteProduct($id: ID!) {
     deleteProduct(id: $id) {
-      ... on Product {
+      id
+      name
+      description
+      image
+      price
+      available
+      active
+      user {
         id
         name
-        description
+        email
         image
-        price
-        available
+        role {
+          id
+          name
+        }
         active
+        google
+      }
+      category {
+        id
+        name
         user {
           id
           name
@@ -216,28 +206,7 @@ export const DELETE_PRODUCT = gql`
           active
           google
         }
-        category {
-          id
-          name
-          user {
-            id
-            name
-            email
-            image
-            role {
-              id
-              name
-            }
-            active
-            google
-          }
-          active
-        }
-      }
-      ... on InputError {
-        error {
-          message
-        }
+        active
       }
     }
   }

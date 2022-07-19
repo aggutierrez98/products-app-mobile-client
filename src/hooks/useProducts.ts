@@ -7,11 +7,13 @@ import {GetProductsRes} from '../interfaces';
 
 export const useProducts = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const [deleteProduct, {loading: loadingDelete}] = useMutation(DELETE_PRODUCT);
+  const [deleteProduct, {loading: loadingDelete, error: deleteProductError}] =
+    useMutation(DELETE_PRODUCT);
   const {
     data,
     refetch,
     reobserve,
+    error: getProductsError,
     loading: loadingGet,
   }: GetProductsRes = useQuery(GET_PRODUCTS, {
     fetchPolicy: 'cache-first',
@@ -44,6 +46,7 @@ export const useProducts = () => {
 
   return {
     products,
+    error: deleteProductError || getProductsError,
     refreshing,
     loading: loadingDelete || loadingGet,
     loadProductsFromBackend,

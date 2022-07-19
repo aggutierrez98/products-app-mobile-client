@@ -15,9 +15,6 @@ export interface Product {
   active: boolean;
   user: User;
   category: Category;
-  error?: {
-    message: string;
-  };
 }
 
 export interface GetProductsResponse {

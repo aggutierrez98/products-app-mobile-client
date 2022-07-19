@@ -9,8 +9,6 @@ export const createCategoryUpdateCache = (
   cache.modify({
     fields: {
       getCategories(oldCategoriesData) {
-        if (newCategoryData?.createCategory.error) return oldCategoriesData;
-
         return {
           ...oldCategoriesData,
           categories: [...oldCategoriesData.categories, {...newCategoryData}],

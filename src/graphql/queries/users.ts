@@ -3,25 +3,18 @@ import {gql} from '@apollo/client';
 export const GET_USERS = gql`
   query GetUsers($limit: Int, $skip: Int) {
     getUsers(limit: $limit, skip: $skip) {
-      ... on GetUsersResults {
-        users {
+      users {
+        id
+        name
+        email
+        image
+        active
+        role {
           id
           name
-          email
-          image
-          active
-          role {
-            id
-            name
-          }
-        }
-        count
-      }
-      ... on InputError {
-        error {
-          message
         }
       }
+      count
     }
   }
 `;

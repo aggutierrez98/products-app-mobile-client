@@ -59,3 +59,8 @@ buck-out/
 # Ruby / CocoaPods
 /ios/Pods/
 /vendor/bundle/
+
+# Environment Files
+.env.production
+.env.staging
+.env

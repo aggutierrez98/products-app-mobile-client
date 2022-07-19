@@ -13,8 +13,6 @@ export const createProductUpdateCache = (
   cache.modify({
     fields: {
       getProducts(oldProductsData) {
-        if (newProductData?.createProduct.error) return oldProductsData;
-
         return {
           ...oldProductsData,
           products: [...oldProductsData.products, {...newProductData}],

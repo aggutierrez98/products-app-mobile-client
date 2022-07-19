@@ -1,5 +1,5 @@
 import {useMutation, useQuery} from '@apollo/client';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {
   CREATE_CATEGORY,
   DELETE_CATEGORY,
@@ -21,8 +21,6 @@ import {
 export const useCategory = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [categoryName, setCategoryName] = useState('');
-  const [error, setError] = useState(null);
-
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState<{
     title: string | null;
@@ -57,21 +55,13 @@ export const useCategory = () => {
       skip: 0,
     },
   });
-  const {data: userData}: CurrentUserRes = useQuery(CURRENT_USER);
-  const [createCategory, {data, loading: loadingCreate}] =
+  const {data: userData, error: getCategoryError}: CurrentUserRes =
+    useQuery(CURRENT_USER);
+  const [createCategory, {loading: loadingCreate, error: createCategoryError}] =
     useMutation(CREATE_CATEGORY);
-  const [updateCategory, {loading: loadingUpdate}] =
+  const [updateCategory, {loading: loadingUpdate, error: updateCategoryError}] =
     useMutation(UPDATE_CATEGORY);
-
-  useEffect(() => {
-    if (data?.createCategory.error) {
-      setError(data?.createCategory.error.message);
-    } else {
-      setError(null);
-    }
-  }, [data?.createCategory.error]);
-
-  const [deleteCategory, {loading: loadingDelete}] =
+  const [deleteCategory, {loading: loadingDelete, error: deleteCategoryError}] =
     useMutation(DELETE_CATEGORY);
 
   const categories = (categoriesData as GetCategoriesResponse | undefined)
@@ -143,7 +133,11 @@ export const useCategory = () => {
     refreshing,
     loading: loadingGet,
     loadingMutation: loadingCreate || loadingUpdate || loadingDelete,
-    inputError: error,
+    inputError:
+      getCategoryError ||
+      createCategoryError ||
+      updateCategoryError ||
+      deleteCategoryError,
     categoryName,
     modalVisible,
     modalData,

@@ -24,9 +24,6 @@ export interface User {
   image?: null;
   role: Role;
   active: Boolean;
-  // error?: {
-  //   message: string;
-  // };
 }
 
 export type GetUsersRes = QueryResult<
