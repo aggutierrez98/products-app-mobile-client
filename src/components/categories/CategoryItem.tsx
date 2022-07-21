@@ -43,16 +43,13 @@ export const CategoryItem = ({
               'When pressed it cannot be undone',
               [
                 {
+                  text: 'Cancel',
+                },
+                {
                   text: 'Delete',
-                  style: 'destructive',
                   onPress: () => {
                     deleteCategoryHandler(item.id);
                   },
-                },
-                {
-                  text: 'Cancel',
-                  style: 'cancel',
-                  onPress: () => {},
                 },
               ],
             );

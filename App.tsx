@@ -1,29 +1,29 @@
 import React, {useEffect} from 'react';
-import {useColorScheme} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import 'react-native-gesture-handler';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import SplashScreen from 'react-native-splash-screen';
 import {ApolloProvider} from '@apollo/client';
 import {MainNavigator} from './src/navigator/MainNavigator';
-import {ThemeProvider} from 'styled-components/native';
-import {lightTheme, darkTheme} from './src/theme/theme';
 import {client} from './src/graphql/client';
+import {ThemeProvider} from 'styled-components';
+import {darkTheme, lightTheme} from './src/theme/theme';
+import {useColorScheme} from 'react-native';
 
 const App = () => {
-  const theme = useColorScheme();
   useEffect(() => SplashScreen.hide(), []);
+  const theme = useColorScheme();
 
   return (
-    <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-      <SafeAreaProvider>
+    <SafeAreaProvider>
+      <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
         <ApolloProvider client={client}>
           <NavigationContainer>
             <MainNavigator />
           </NavigationContainer>
         </ApolloProvider>
-      </SafeAreaProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 };
 

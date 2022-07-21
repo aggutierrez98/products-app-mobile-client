@@ -56,16 +56,16 @@ export const ProductItem = ({
             'When pressed it cannot be undone',
             [
               {
+                text: 'Cancel',
+                style: 'cancel',
+                onPress: () => {},
+              },
+              {
                 text: 'Delete',
                 style: 'destructive',
                 onPress: () => {
                   deleteProductFunc(item.id);
                 },
-              },
-              {
-                text: 'Cancel',
-                style: 'cancel',
-                onPress: () => {},
               },
             ],
           );

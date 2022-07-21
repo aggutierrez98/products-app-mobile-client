@@ -59,8 +59,8 @@ export const ProductScreen = ({
               refreshing={refreshing}
               onRefresh={refetchProduct}
               progressViewOffset={10}
-              progressBackgroundColor={colors.foreground}
-              colors={[colors.text, colors.primary]}
+              progressBackgroundColor={colors.headerBackground}
+              colors={[colors.text]}
             />
           ) : (
             <></>
@@ -140,6 +140,7 @@ export const ProductScreen = ({
                   label={category.name}
                   value={category.id}
                   key={category.id}
+                  style={{color: colors.text}}
                 />
               ))}
             </Picker>

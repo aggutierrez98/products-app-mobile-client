@@ -52,8 +52,8 @@ export const UserScreen = ({
             refreshing={refreshing}
             onRefresh={refetchUser}
             progressViewOffset={10}
-            progressBackgroundColor={colors.foreground}
-            colors={[colors.text, colors.primary]}
+            progressBackgroundColor={colors.headerBackground}
+            colors={[colors.text]}
           />
         }>
         <UserImage
@@ -82,7 +82,12 @@ export const UserScreen = ({
                 onChange(itemValue, 'role');
               }}>
               {roles?.map(role => (
-                <Picker.Item label={role.name} value={role.id} key={role.id} />
+                <Picker.Item
+                  label={role.name}
+                  value={role.id}
+                  key={role.id}
+                  style={{color: colors.text}}
+                />
               ))}
             </Picker>
           </PickerContainer>

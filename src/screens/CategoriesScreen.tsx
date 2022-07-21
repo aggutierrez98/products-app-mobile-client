@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import {Alert, FlatList, RefreshControl} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {useCategory} from '../hooks/useCategory';
 import {ProtectedNavigationParams} from '../navigator/ProtectedNavigator';
@@ -16,7 +15,6 @@ interface Props
   extends DrawerScreenProps<ProtectedNavigationParams, 'CategoriesScreen'> {}
 
 export const CategoriesScreen = ({navigation}: Props) => {
-  const {top} = useSafeAreaInsets();
   const {colors} = useTheme();
 
   const {
@@ -62,15 +60,15 @@ export const CategoriesScreen = ({navigation}: Props) => {
 
   return (
     <>
-      <ScreenContainer refreshing={refreshing} top={top}>
+      <ScreenContainer refreshing={refreshing}>
         <FlatList
           refreshControl={
             <RefreshControl
               refreshing={refreshing || loading}
               onRefresh={loadProductsFromBackend}
               progressViewOffset={10}
-              progressBackgroundColor={colors.foreground}
-              colors={[colors.text, colors.primary]}
+              progressBackgroundColor={colors.headerBackground}
+              colors={[colors.text]}
             />
           }
           data={categories}

@@ -15,6 +15,13 @@ declare module 'styled-components' {
       text: string;
       primary: string;
       placeholder: string;
+      authInputPlaceholder: string;
+      headerBackground: string;
+      headerText: string;
+      headerButtonBackground: string;
+      editButtonColor: string;
+      deleteButtonColor: string;
+      statusBarBackground: string;
     };
   }
 }

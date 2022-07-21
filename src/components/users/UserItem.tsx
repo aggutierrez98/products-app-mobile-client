@@ -58,15 +58,15 @@ export const UserItem = ({
           onPress={() => {
             Alert.alert('Are you sure?', 'When presed user will be disabled', [
               {
-                text: 'Ok',
-                onPress: () => {
-                  deactivateUserFunc(item.id);
-                },
-              },
-              {
                 text: 'Cancel',
                 style: 'cancel',
                 onPress: () => {},
+              },
+              {
+                text: 'Deactivate',
+                onPress: () => {
+                  deactivateUserFunc(item.id);
+                },
               },
             ]);
           }}>
@@ -78,15 +78,15 @@ export const UserItem = ({
           onPress={() => {
             Alert.alert('Are you sure?', 'When presed user will be enabled', [
               {
-                text: 'Ok',
-                onPress: () => {
-                  activateUserFunc(item.id);
-                },
-              },
-              {
                 text: 'Cancel',
                 style: 'cancel',
                 onPress: () => {},
+              },
+              {
+                text: 'Activate',
+                onPress: () => {
+                  activateUserFunc(item.id);
+                },
               },
             ]);
           }}>

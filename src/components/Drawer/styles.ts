@@ -18,7 +18,7 @@ export const LogoTitle = styled(Text)`
   font-family: ${p => p.theme.fonts.bold};
   margin-right: 15px;
   color: ${p => p.theme.colors.primary};
-  text-shadow: 1px 2px 12px rgba(0, 0, 0, 0.76);
+  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.48);
 `;
 
 export const ItemButton = styled.TouchableOpacity`
@@ -54,6 +54,7 @@ export const TextContainer = styled.View`
 
 export const UserName = styled(Text)`
   font-size: 18px;
+  font-family: ${p => p.theme.fonts.bold};
 `;
 export const UserEmail = styled(Text)`
   font-size: 12px;
@@ -67,7 +68,6 @@ export const LogoContainer = styled.View`
 `;
 
 export const LogoMenuIcon = styled(LogoIcon)`
-  text-shadow: 1px 2px 12px rgba(0, 0, 0, 0.76);
   font-size: 100px;
 `;
 

@@ -3,11 +3,10 @@ import styled from 'styled-components/native';
 
 interface ContainerProps {
   refreshing: boolean;
-  top: number;
 }
 
 export const ScreenContainer = styled.View<ContainerProps>`
-  margin-top: ${p => (p.refreshing ? `${p.top + 20}px` : '0px')};
+  background-color: ${p => p.theme.colors.background};
   flex: 1;
   margin: 10px 10px;
 `;
@@ -35,7 +34,8 @@ export const ButtonSave = styled.TouchableOpacity`
 `;
 
 export const ButtonSaveText = styled.Text`
-  color: ${p => p.theme.colors.text};
+  color: #efefef;
+  /* color: ${p => p.theme.colors.text}; */
   font-family: ${p => p.theme.fonts.bold};
   font-size: 18px;
 `;
@@ -45,10 +45,11 @@ export const defaultStyles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+
+    elevation: 7,
   },
 });

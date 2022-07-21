@@ -35,15 +35,15 @@ export const Detail = styled(Name)`
 export const EditButton = styled.TouchableOpacity`
   border-radius: 10px;
   padding: 10px;
-  background-color: ${p => p.theme.colors.foreground};
+  background-color: ${p => p.theme.colors.editButtonColor};
 `;
 
 export const DeleteButton = styled(EditButton)`
-  background-color: #af0303;
+  background-color: ${p => p.theme.colors.deleteButtonColor};
 `;
 
 export const Icon = styled(IconDef)`
-  text-shadow: 1px 2px 12px rgba(0, 0, 0, 0.76);
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.26);
   color: ${p => p.theme.colors.text};
   font-size: 27.5px;
 `;
@@ -68,4 +68,5 @@ export const ModalInput = styled(TextInput)`
   padding: 5px 20px;
   margin-top: 5px;
   margin-bottom: 20px;
+  border-width: 1px;
 `;

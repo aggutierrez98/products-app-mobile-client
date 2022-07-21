@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import {FlatList, RefreshControl} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {UsersStackParams} from '../navigator/UsersNavigator';
 import {useUsers} from '../hooks/useUsers';
@@ -15,7 +14,6 @@ interface Props
   extends NativeStackScreenProps<UsersStackParams, 'UsersScreen'> {}
 
 export const UsersScreen = ({navigation}: Props) => {
-  const {top} = useSafeAreaInsets();
   const {colors} = useTheme();
 
   const {
@@ -35,10 +33,13 @@ export const UsersScreen = ({navigation}: Props) => {
       header: () => (
         <Header title={'Users'}>
           <Picker
+            dropdownIconColor={colors.text}
+            dropdownIconRippleColor={colors.primary}
             selectedValue={selectedFilter}
             style={{
               width: 150,
               marginRight: -15,
+              color: colors.text,
             }}
             onValueChange={changeFilter}>
             {options?.map(option => (
@@ -52,18 +53,25 @@ export const UsersScreen = ({navigation}: Props) => {
         </Header>
       ),
     });
-  }, [options, navigation, selectedFilter, changeFilter]);
+  }, [
+    options,
+    navigation,
+    selectedFilter,
+    changeFilter,
+    colors.primary,
+    colors.text,
+  ]);
 
   return (
-    <ScreenContainer top={top} refreshing={refreshing}>
+    <ScreenContainer refreshing={refreshing}>
       <FlatList
         refreshControl={
           <RefreshControl
             refreshing={refreshing || loading}
             onRefresh={loadProductsFromBackend}
             progressViewOffset={10}
-            progressBackgroundColor={colors.foreground}
-            colors={[colors.text, colors.primary]}
+            progressBackgroundColor={colors.headerBackground}
+            colors={[colors.text]}
           />
         }
         data={users}

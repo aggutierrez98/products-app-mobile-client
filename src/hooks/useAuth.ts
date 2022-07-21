@@ -14,8 +14,12 @@ export const useAuth = () => {
     loading: userLoading,
     refetch,
     client,
-    error: userError,
-  } = useQuery(CURRENT_USER);
+    // error: userError,
+  } = useQuery(CURRENT_USER, {
+    onError: error => {
+      console.log({UserError: error});
+    },
+  });
   const user = (userData as CurrentUserResponse)?.currentUser;
 
   const [loadingFromRefetch, setLoadingFromRefetch] = useState(false);
@@ -46,6 +50,9 @@ export const useAuth = () => {
       variables: {email, password},
       update: loginUpdateCache,
       onCompleted: loginOnCompleted,
+      onError: error => {
+        console.log({LoginError: error});
+      },
     });
   };
 
@@ -69,7 +76,8 @@ export const useAuth = () => {
     password,
     loading:
       loginLoading || registerLoading || userLoading || loadingFromRefetch,
-    inputError: loginError || registerError || userError,
+    inputError: loginError || registerError,
+    // || userError,
     onChange,
     loginHandler,
     registerHandler,

@@ -4,7 +4,7 @@ import {Text} from '../../theme/defaultStlyes';
 
 export const LogoIcon = styled(Icon)`
   padding-bottom: 15px;
-  text-shadow: 1px 2px 12px rgba(0, 0, 0, 0.76);
+  text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.76);
   color: ${p => p.theme.colors.primary};
   font-size: 70px;
 `;
@@ -21,5 +21,5 @@ export const LogoTitle = styled(Text)`
   font-family: ${p => p.theme.fonts.bold};
   margin-right: 15px;
   color: ${p => p.theme.colors.primary};
-  text-shadow: 1px 2px 12px rgba(0, 0, 0, 0.76);
+  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.48);
 `;

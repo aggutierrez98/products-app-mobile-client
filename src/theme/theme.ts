@@ -20,6 +20,13 @@ export const darkTheme: DefaultTheme = {
     text: '#EFEFEF',
     primary: '#F66B0E',
     placeholder: '#B5B5B5',
+    authInputPlaceholder: '#ffffff59',
+    editButtonColor: '#205375',
+    deleteButtonColor: '#af0303',
+    headerBackground: '#205375',
+    headerText: '#EFEFEF',
+    headerButtonBackground: '#F66B0E',
+    statusBarBackground: '#205375',
   },
 };
 
@@ -31,6 +38,13 @@ export const lightTheme: DefaultTheme = {
     text: '#112B3C',
     primary: '#F66B0E',
     placeholder: '#205375',
+    authInputPlaceholder: '#8e8e8e',
+    editButtonColor: '#F66B0E',
+    deleteButtonColor: '#f20000',
+    headerBackground: '#F66B0E',
+    headerText: '#112B3C',
+    headerButtonBackground: '#205375',
+    statusBarBackground: '#F66B0E',
   },
 };
 

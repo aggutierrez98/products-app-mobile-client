@@ -2,9 +2,10 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {LoginScreen} from '../screens/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen';
-import {Loading} from '../components/Loading';
 import ProtectedNavigator from './ProtectedNavigator';
 import {useAuth} from '../hooks/useAuth';
+import GeneralStatusBarColor from '../components/StatusBar';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,11 +16,15 @@ export type MainNavigationParams = {
 };
 
 export const MainNavigator = () => {
-  const {loading, user} = useAuth();
+  const {user} = useAuth();
 
   return (
-    <>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
+    <SafeAreaView style={{flex: 1}}>
+      <GeneralStatusBarColor />
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
         {!user ? (
           <>
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
@@ -32,7 +37,6 @@ export const MainNavigator = () => {
           />
         )}
       </Stack.Navigator>
-      {loading && <Loading />}
-    </>
+    </SafeAreaView>
   );
 };

@@ -33,9 +33,10 @@ export const LoginScreen = ({navigation}: Props) => {
 
   useEffect(() => {
     if (inputError) {
-      Alert.alert('Login incorrecto', inputError, [
+      Alert.alert('Error in login', inputError.message, [
         {
           text: 'Ok',
+          style: 'default',
         },
       ]);
     }
@@ -53,8 +54,8 @@ export const LoginScreen = ({navigation}: Props) => {
             <FormTitle>Login</FormTitle>
             <FormLabel>Email</FormLabel>
             <FormInput
-              placeholder="Email"
-              placeholderTextColor="rgba(255,255,255,0.35)"
+              placeholder="Insert your email"
+              placeholderTextColor={colors.authInputPlaceholder}
               keyboardType="email-address"
               underlineColorAndroid={colors.text}
               selectionColor={colors.text}
@@ -71,8 +72,8 @@ export const LoginScreen = ({navigation}: Props) => {
             <FormLabel>Password</FormLabel>
             <FormPassInputContainer>
               <FormInput
-                placeholder="********"
-                placeholderTextColor="rgba(255,255,255,0.35)"
+                placeholder="Insert your ********"
+                placeholderTextColor={colors.authInputPlaceholder}
                 secureTextEntry={hidePass ? true : false}
                 underlineColorAndroid={colors.text}
                 selectionColor={colors.text}

@@ -7,7 +7,7 @@ export const KeyboardAvoidingView = styled.KeyboardAvoidingView`
 `;
 
 export const FormPassIcon = styled(Icon)`
-  color: #b5b5b5;
+  color: ${p => p.theme.colors.text};
 `;
 
 export const FormContainer = styled.View`

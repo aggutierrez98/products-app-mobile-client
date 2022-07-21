@@ -40,7 +40,7 @@ export const RegisterScreen = ({navigation}: Props) => {
 
   useEffect(() => {
     if (inputError) {
-      Alert.alert('Error', inputError, [
+      Alert.alert('Error in register', inputError.message, [
         {
           text: 'Ok',
         },
@@ -60,8 +60,8 @@ export const RegisterScreen = ({navigation}: Props) => {
             <FormTitle>Register</FormTitle>
             <FormLabel>Name</FormLabel>
             <FormInput
-              placeholder="Name"
-              placeholderTextColor="rgba(255,255,255,0.35)"
+              placeholder="Insert your name"
+              placeholderTextColor={colors.authInputPlaceholder}
               keyboardType="default"
               underlineColorAndroid={colors.text}
               autoCapitalize="words"
@@ -76,8 +76,8 @@ export const RegisterScreen = ({navigation}: Props) => {
 
             <FormLabel>Email</FormLabel>
             <FormInput
-              placeholder="Email"
-              placeholderTextColor="rgba(255,255,255,0.35)"
+              placeholder="Insert your email"
+              placeholderTextColor={colors.authInputPlaceholder}
               keyboardType="email-address"
               underlineColorAndroid={colors.text}
               selectionColor={colors.text}
@@ -94,8 +94,8 @@ export const RegisterScreen = ({navigation}: Props) => {
             <FormLabel>Password</FormLabel>
             <FormPassInputContainer>
               <FormInput
-                placeholder="********"
-                placeholderTextColor="rgba(255,255,255,0.35)"
+                placeholder="Insert your ********"
+                placeholderTextColor={colors.authInputPlaceholder}
                 secureTextEntry={hidePass ? true : false}
                 underlineColorAndroid={colors.text}
                 selectionColor={colors.text}
