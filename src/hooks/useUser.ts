@@ -1,4 +1,5 @@
 import {useMutation, useQuery} from '@apollo/client';
+import {useNavigation} from '@react-navigation/native';
 import {ReactNativeFile} from 'apollo-upload-client';
 import {useEffect, useState} from 'react';
 import {Asset} from 'react-native-image-picker';
@@ -12,6 +13,7 @@ import {GetUserRes, GetRolesRes} from '../interfaces';
 import {useForm} from './useForm';
 
 export const useUser = (id: string, name: string) => {
+  const {goBack} = useNavigation();
   const [tempImage, setTempImage] = useState<Asset | null>();
   const [modalVisible, setModalVisible] = useState(false);
   const closeModal = () => setModalVisible(false);
@@ -74,9 +76,8 @@ export const useUser = (id: string, name: string) => {
           // // password,
         },
       },
-      onError: err => {
-        console.log({err});
-      },
+      onError: error => console.log(error),
+      onCompleted: () => goBack(),
     });
 
     if (tempImage) uploadImage(tempImage);
@@ -95,9 +96,8 @@ export const useUser = (id: string, name: string) => {
         id,
         collection: 'users',
       },
-      onError: error => {
-        console.log({error});
-      },
+      onError: error => console.log(error),
+      onCompleted: () => goBack(),
       update: updateUserUpdateCache,
     });
   };

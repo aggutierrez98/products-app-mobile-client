@@ -1,17 +1,10 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Picker} from '@react-native-picker/picker';
-import {
-  ActivityIndicator,
-  Platform,
-  RefreshControl,
-  ScrollView,
-} from 'react-native';
+import {Alert, Platform, RefreshControl, ScrollView} from 'react-native';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {useProduct} from '../hooks/useProduct';
 import {Loading} from '../components/Loading';
-import {TouchableOpacity} from 'react-native';
-import {FadeInImage} from '../components/FadeInImage';
 import {ModalEditPhoto} from '../components/ModalEditPhoto';
 import {
   Button,
@@ -22,6 +15,7 @@ import {
 } from '../theme/detailScreenStyles';
 import {useTheme} from 'styled-components';
 import {ButtonSaveText} from '../theme/defaultStlyes';
+import {ProductImage} from '../components/products/ProductImage';
 
 interface Props
   extends NativeStackScreenProps<ProductsStackParams, 'ProductScreen'> {}
@@ -30,11 +24,11 @@ export const ProductScreen = ({
   route: {
     params: {id: idFromParams = '', name: nameFromParams = ''},
   },
-  navigation,
 }: Props) => {
   const {
     product,
     categories,
+    error,
     loading,
     loadingMutation,
     tempImage,
@@ -49,6 +43,17 @@ export const ProductScreen = ({
     refetchProduct,
   } = useProduct(idFromParams, nameFromParams);
   const {colors} = useTheme();
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Error:', error.message, [
+        {
+          text: 'Ok',
+          style: 'default',
+        },
+      ]);
+    }
+  }, [error]);
 
   return (
     <>
@@ -67,36 +72,12 @@ export const ProductScreen = ({
           )
         }>
         {idFromParams?.length > 0 && (
-          <>
-            {loading ? (
-              <ActivityIndicator
-                size="large"
-                style={{
-                  height: 300,
-                }}
-              />
-            ) : (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                  openModal();
-                }}>
-                <FadeInImage
-                  source={
-                    tempImage || product?.image
-                      ? {
-                          uri: tempImage?.uri || product?.image,
-                        }
-                      : require('../assets/no-image.jpg')
-                  }
-                  style={{
-                    width: '100%',
-                    height: 300,
-                  }}
-                />
-              </TouchableOpacity>
-            )}
-          </>
+          <ProductImage
+            loading={loading}
+            image={product?.image}
+            tempImage={tempImage?.uri}
+            openModal={openModal}
+          />
         )}
 
         <FormContainer behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -146,12 +127,7 @@ export const ProductScreen = ({
             </Picker>
           </PickerContainer>
 
-          <Button
-            activeOpacity={0.8}
-            onPress={async () => {
-              await saveOrUpdate();
-              navigation.goBack();
-            }}>
+          <Button activeOpacity={0.8} onPress={saveOrUpdate}>
             <ButtonSaveText>Save</ButtonSaveText>
           </Button>
         </FormContainer>

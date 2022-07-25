@@ -1,7 +1,7 @@
 import {Picker} from '@react-native-picker/picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
-import {Platform, RefreshControl, ScrollView} from 'react-native';
+import React, {useEffect} from 'react';
+import {Alert, Platform, RefreshControl, ScrollView} from 'react-native';
 import {useUser} from '../hooks/useUser';
 import {UsersStackParams} from '../navigator/UsersNavigator';
 import {Loading} from '../components/Loading';
@@ -29,6 +29,7 @@ export const UserScreen = ({
   const {
     loading,
     loadingMutation,
+    error,
     refreshing,
     modalVisible,
     tempImage,
@@ -43,6 +44,17 @@ export const UserScreen = ({
     takePhotoFromGalleryHandler,
   } = useUser(idFromParams, nameFromParams);
   const {colors} = useTheme();
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Error:', error.message, [
+        {
+          text: 'Ok',
+          style: 'default',
+        },
+      ]);
+    }
+  }, [error]);
 
   return (
     <>

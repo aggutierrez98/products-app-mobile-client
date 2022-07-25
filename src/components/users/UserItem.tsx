@@ -76,19 +76,24 @@ export const UserItem = ({
         <ActiveButton
           activeOpacity={0.7}
           onPress={() => {
-            Alert.alert('Are you sure?', 'When presed user will be enabled', [
-              {
-                text: 'Cancel',
-                style: 'cancel',
-                onPress: () => {},
-              },
-              {
-                text: 'Activate',
-                onPress: () => {
-                  activateUserFunc(item.id);
+            Alert.alert(
+              'Are you sure?',
+              'When presed user will be enabled',
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                  onPress: () => {},
                 },
-              },
-            ]);
+                {
+                  text: 'Activate',
+                  onPress: () => {
+                    activateUserFunc(item.id);
+                  },
+                },
+              ],
+              {cancelable: true},
+            );
           }}>
           <Icon name="done" size={27.5} color="white" />
         </ActiveButton>

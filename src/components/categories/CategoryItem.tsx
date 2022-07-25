@@ -52,6 +52,7 @@ export const CategoryItem = ({
                   },
                 },
               ],
+              {cancelable: true},
             );
           }}>
           <Icon name="delete-outline" />

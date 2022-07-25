@@ -1,7 +1,8 @@
 import React from 'react';
-import {UserImageContainer} from './styles';
-import {ActivityIndicator} from '../../theme/detailScreenStyles';
+import {useWindowDimensions} from 'react-native';
 import {FadeInImage} from '../FadeInImage';
+import {ActivityIndicator} from '../FadeInImage/styles';
+import {ProductImageContainer} from './styles';
 
 interface Props {
   openModal: () => void;
@@ -10,9 +11,11 @@ interface Props {
   image: string | undefined;
 }
 
-export const UserImage = ({image, tempImage, loading, openModal}: Props) => {
+export const ProductImage = ({image, loading, openModal, tempImage}: Props) => {
+  const {width} = useWindowDimensions();
+
   return (
-    <UserImageContainer activeOpacity={0.8} onPress={openModal}>
+    <ProductImageContainer activeOpacity={0.8} onPress={openModal}>
       {loading ? (
         <ActivityIndicator size="large" />
       ) : (
@@ -22,15 +25,14 @@ export const UserImage = ({image, tempImage, loading, openModal}: Props) => {
               ? {
                   uri: tempImage || image,
                 }
-              : require('../../assets/avatar-placeholder.png')
+              : require('../../assets/no-image.jpg')
           }
           style={{
-            width: 250,
-            height: 250,
-            borderRadius: 150,
+            width,
+            height: '100%',
           }}
         />
       )}
-    </UserImageContainer>
+    </ProductImageContainer>
   );
 };

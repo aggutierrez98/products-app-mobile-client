@@ -5,7 +5,7 @@ export const ActiveButton = styled(EditButton)`
   background-color: #05c105;
 `;
 
-export const ImageContainer = styled.TouchableOpacity`
+export const UserImageContainer = styled.TouchableOpacity`
   margin-top: 30px;
   margin-bottom: 20px;
   align-items: center;

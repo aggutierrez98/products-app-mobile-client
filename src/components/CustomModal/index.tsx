@@ -1,6 +1,6 @@
 // Modal.js
 import React from 'react';
-import {TouchableWithoutFeedback, Modal, View, ViewStyle} from 'react-native';
+import {TouchableWithoutFeedback, Modal, ViewStyle} from 'react-native';
 import {ModalContent, ModalOverlay} from './styles';
 
 interface Props {
@@ -23,17 +23,15 @@ export const MyModal = ({
   dismiss,
 }: Props) => {
   return (
-    <View>
-      <Modal
-        visible={visible}
-        transparent={transparent}
-        onRequestClose={dismiss}
-        animationType={animationType}>
-        <TouchableWithoutFeedback onPress={dismiss}>
-          <ModalOverlay style={{...overlayStyles}} />
-        </TouchableWithoutFeedback>
-        <ModalContent style={{...modalStyles}}>{children}</ModalContent>
-      </Modal>
-    </View>
+    <Modal
+      visible={visible}
+      transparent={transparent}
+      onRequestClose={dismiss}
+      animationType={animationType}>
+      <TouchableWithoutFeedback onPress={dismiss}>
+        <ModalOverlay style={{...overlayStyles}} />
+      </TouchableWithoutFeedback>
+      <ModalContent style={{...modalStyles}}>{children}</ModalContent>
+    </Modal>
   );
 };

@@ -6,11 +6,7 @@ const GeneralStatusBarColor = ({...props}) => {
   const {colors} = useTheme();
   return (
     <StatusBarContainer>
-      <StatusBar
-        translucent
-        backgroundColor={colors.statusBarBackground}
-        {...props}
-      />
+      <StatusBar backgroundColor={colors.statusBarBackground} {...props} />
     </StatusBarContainer>
   );
 };

@@ -13,8 +13,10 @@ import {
   updateProductUpdateCache,
 } from '../graphql/cache/products';
 import {takePhoto, takePhotoFromGallery} from '../helpers/utils';
+import {useNavigation} from '@react-navigation/native';
 
 export const useProduct = (id: string, name: string) => {
+  const {goBack} = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const closeModal = () => setModalVisible(false);
@@ -78,9 +80,8 @@ export const useProduct = (id: string, name: string) => {
             price: Number(product.price),
           },
         },
-        onError: error => {
-          console.log({error});
-        },
+        onError: error => console.log(error),
+        onCompleted: () => goBack(),
         update: updateProductUpdateCache,
       });
 
@@ -96,9 +97,8 @@ export const useProduct = (id: string, name: string) => {
             user: userData?.currentUser?.id,
           },
         },
-        onError: error => {
-          console.log({error});
-        },
+        onError: error => console.log(error),
+        onCompleted: () => goBack(),
         update: createProductUpdateCache,
       });
     }
@@ -116,9 +116,8 @@ export const useProduct = (id: string, name: string) => {
         id,
         collection: 'products',
       },
-      onError: error => {
-        console.log({error});
-      },
+      onError: error => console.log(error),
+      onCompleted: () => goBack(),
       update: updateProductUpdateCache,
     });
   };

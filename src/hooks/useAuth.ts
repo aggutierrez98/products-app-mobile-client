@@ -14,7 +14,7 @@ export const useAuth = () => {
     loading: userLoading,
     refetch,
     client,
-    // error: userError,
+    error: userError,
   } = useQuery(CURRENT_USER, {
     onError: error => {
       console.log({UserError: error});
@@ -77,7 +77,7 @@ export const useAuth = () => {
     loading:
       loginLoading || registerLoading || userLoading || loadingFromRefetch,
     inputError: loginError || registerError,
-    // || userError,
+    userError,
     onChange,
     loginHandler,
     registerHandler,

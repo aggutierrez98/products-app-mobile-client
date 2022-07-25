@@ -68,6 +68,7 @@ export const ProductItem = ({
                 },
               },
             ],
+            {cancelable: true},
           );
         }}>
         <Icon name="delete-outline" />

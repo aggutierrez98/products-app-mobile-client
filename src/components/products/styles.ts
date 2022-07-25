@@ -6,3 +6,12 @@ export const CardContainer = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
 `;
+
+export const ProductImageContainer = styled.TouchableOpacity`
+  margin-bottom: 10px;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  width: 100%;
+  position: relative;
+`;
