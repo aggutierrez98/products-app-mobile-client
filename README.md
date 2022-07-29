@@ -30,6 +30,6 @@ React-native, Typescript, Styled Components and Apollo Client
 },
 ```
 
-<!-- ### Published apk -->
+### Published apk
 
-<!-- [Products App](https://google-playstore-link) -->
+[Products App](https://play.google.com/store/apps/details?id=com.aggutierrez.productsapprn)
