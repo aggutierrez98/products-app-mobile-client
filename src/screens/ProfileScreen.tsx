@@ -4,6 +4,7 @@ import {ScrollView} from 'react-native';
 import {CURRENT_USER} from '../graphql/queries/auth';
 import {CurrentUserResponse} from '../interfaces/user';
 import {FadeInImage} from '../components/FadeInImage';
+import {useShowErrorMessages} from '../hooks/useShowErrorMessages';
 import {
   Label,
   AvatarContainer,
@@ -12,9 +13,10 @@ import {
 } from '../theme/profileScreenStyles';
 
 export const ProfileScreen = () => {
-  const {data: userData}: QueryResult<CurrentUserResponse> =
+  const {data: userData, error}: QueryResult<CurrentUserResponse> =
     useQuery(CURRENT_USER);
   const user = userData?.currentUser;
+  useShowErrorMessages(error);
 
   return (
     <ScrollView>

@@ -7,6 +7,7 @@ import {ProductItem} from '../components/products/ProductItem';
 import {ItemSeparator} from '../components/ItemSeparator';
 import {ScreenContainer} from '../theme/defaultStlyes';
 import {useTheme} from 'styled-components';
+import {useShowErrorMessages} from '../hooks/useShowErrorMessages';
 
 interface ProuductsProps
   extends NativeStackScreenProps<ProductsStackParams, 'ProductsScreen'> {}
@@ -18,9 +19,12 @@ export const ProductsScreen = ({}: ProuductsProps) => {
     products,
     refreshing,
     loading,
+    error,
     deleteProductFunc,
     loadProductsFromBackend,
   } = useProducts();
+
+  useShowErrorMessages(error);
 
   return (
     <ScreenContainer refreshing={refreshing}>

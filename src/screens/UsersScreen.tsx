@@ -9,6 +9,7 @@ import {UserItem} from '../components/users/UserItem';
 import {ItemSeparator} from '../components/ItemSeparator';
 import {useTheme} from 'styled-components';
 import {ScreenContainer} from '../theme/defaultStlyes';
+import {useShowErrorMessages} from '../hooks/useShowErrorMessages';
 
 interface Props
   extends NativeStackScreenProps<UsersStackParams, 'UsersScreen'> {}
@@ -22,11 +23,14 @@ export const UsersScreen = ({navigation}: Props) => {
     loading,
     options,
     selectedFilter,
+    error,
     loadProductsFromBackend,
     deactivateUserFunc,
     activateUserFunc,
     changeFilter,
   } = useUsers();
+
+  useShowErrorMessages(error);
 
   useEffect(() => {
     navigation.setOptions({

@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Alert, FlatList, RefreshControl} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {useCategory} from '../hooks/useCategory';
 import {ProtectedNavigationParams} from '../navigator/ProtectedNavigator';
@@ -10,6 +10,7 @@ import {ItemSeparator} from '../components/ItemSeparator';
 import {ScreenContainer} from '../theme/defaultStlyes';
 import {useTheme} from 'styled-components';
 import {CategoriesModal} from '../components/categories/CategoriesModal';
+import {useShowErrorMessages} from '../hooks/useShowErrorMessages';
 
 interface Props
   extends DrawerScreenProps<ProtectedNavigationParams, 'CategoriesScreen'> {}
@@ -19,7 +20,7 @@ export const CategoriesScreen = ({navigation}: Props) => {
 
   const {
     categories,
-    inputError,
+    error,
     loading,
     loadingMutation,
     refreshing,
@@ -34,6 +35,8 @@ export const CategoriesScreen = ({navigation}: Props) => {
     closeModal,
   } = useCategory();
 
+  useShowErrorMessages(error);
+
   useEffect(() => {
     navigation.setOptions({
       header: () => (
@@ -47,16 +50,6 @@ export const CategoriesScreen = ({navigation}: Props) => {
       ),
     });
   }, [navigation, openModal]);
-
-  useEffect(() => {
-    if (inputError) {
-      Alert.alert('Error', 'Error al ingresar categoria', [
-        {
-          text: 'Ok',
-        },
-      ]);
-    }
-  }, [inputError]);
 
   return (
     <>

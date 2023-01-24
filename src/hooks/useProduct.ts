@@ -47,16 +47,27 @@ export const useProduct = (id: string, name: string) => {
   });
   const {data: categoriesData, error: getProductError}: GetCategoriesRes =
     useQuery(GET_CATEGORIES, {});
-  const {data: userData}: CurrentUserRes = useQuery(CURRENT_USER, {
-    fetchPolicy: 'cache-only',
-  });
-  const [createProduct, {loading: loadingCreate, error: createProductError}] =
-    useMutation(CREATE_PRODUCT);
-  const [updateProduct, {loading: loadingUpdate, error: updateProductError}] =
-    useMutation(UPDATE_PRODUCT);
+  const {data: userData, error: getCurrentUserError}: CurrentUserRes = useQuery(
+    CURRENT_USER,
+    {
+      fetchPolicy: 'cache-only',
+    },
+  );
+  const [
+    createProduct,
+    {loading: loadingCreate, error: createProductError, reset: resetCreate},
+  ] = useMutation(CREATE_PRODUCT);
+  const [
+    updateProduct,
+    {loading: loadingUpdate, error: updateProductError, reset: resetUpdate},
+  ] = useMutation(UPDATE_PRODUCT);
   const [
     updateImage,
-    {loading: loadingUpdateImage, error: updateImageProductError},
+    {
+      loading: loadingUpdateImage,
+      error: updateImageProductError,
+      reset: resetUpdateImage,
+    },
   ] = useMutation(UPDATE_IMAGE_CLOUDINARY);
 
   const refetchProduct = async () => {
@@ -80,7 +91,10 @@ export const useProduct = (id: string, name: string) => {
             price: Number(product.price),
           },
         },
-        onError: error => console.log(error),
+        onError: error => {
+          console.log(error);
+          resetUpdate();
+        },
         onCompleted: () => goBack(),
         update: updateProductUpdateCache,
       });
@@ -97,7 +111,10 @@ export const useProduct = (id: string, name: string) => {
             user: userData?.currentUser?.id,
           },
         },
-        onError: error => console.log(error),
+        onError: error => {
+          console.log(error);
+          resetCreate();
+        },
         onCompleted: () => goBack(),
         update: createProductUpdateCache,
       });
@@ -116,7 +133,10 @@ export const useProduct = (id: string, name: string) => {
         id,
         collection: 'products',
       },
-      onError: error => console.log(error),
+      onError: error => {
+        console.log(error);
+        resetUpdateImage();
+      },
       onCompleted: () => goBack(),
       update: updateProductUpdateCache,
     });
@@ -151,7 +171,8 @@ export const useProduct = (id: string, name: string) => {
       getProductError ||
       createProductError ||
       updateProductError ||
-      updateImageProductError,
+      updateImageProductError ||
+      getCurrentUserError,
     categories,
     tempImage,
     loading: loadingGet,

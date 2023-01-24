@@ -14,10 +14,16 @@ export const useUsers = () => {
 
   const [
     deactivateUser,
-    {loading: loadingDeactivate, error: deactivateUserError},
+    {
+      loading: loadingDeactivate,
+      error: deactivateUserError,
+      reset: resetDeactivate,
+    },
   ] = useMutation(DEACTIVATE_USER);
-  const [activateUser, {loading: loadingActivate, error: activateUserError}] =
-    useMutation(ACTIVATE_USER);
+  const [
+    activateUser,
+    {loading: loadingActivate, error: activateUserError, reset: resetActivate},
+  ] = useMutation(ACTIVATE_USER);
   const {
     data,
     refetch,
@@ -59,8 +65,9 @@ export const useUsers = () => {
       onCompleted: () => {
         reobserve();
       },
-      onError: err => {
-        console.log({err});
+      onError: error => {
+        console.log(error);
+        resetDeactivate();
       },
       update: deactivateUserUpdateCache,
     });
@@ -72,8 +79,9 @@ export const useUsers = () => {
       onCompleted: () => {
         reobserve();
       },
-      onError: err => {
-        console.log({err});
+      onError: error => {
+        console.log(error);
+        resetActivate();
       },
       update: activateUserUpdateCache,
     });

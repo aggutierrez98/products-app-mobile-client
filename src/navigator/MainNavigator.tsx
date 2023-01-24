@@ -6,6 +6,7 @@ import ProtectedNavigator from './ProtectedNavigator';
 import {useAuth} from '../hooks/useAuth';
 import GeneralStatusBarColor from '../components/StatusBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useShowErrorMessages} from '../hooks/useShowErrorMessages';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +17,8 @@ export type MainNavigationParams = {
 };
 
 export const MainNavigator = () => {
-  const {user} = useAuth();
+  const {user, userError} = useAuth();
+  useShowErrorMessages(userError);
 
   return (
     <SafeAreaView style={{flex: 1}}>

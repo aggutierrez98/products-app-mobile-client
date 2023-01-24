@@ -1,6 +1,6 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useEffect, useState} from 'react';
-import {Alert, Keyboard, Platform} from 'react-native';
+import React, {useState} from 'react';
+import {Keyboard, Platform} from 'react-native';
 import {Background} from '../components/Background';
 import {Logo} from '../components/Logo';
 import {useAuth} from '../hooks/useAuth';
@@ -21,6 +21,7 @@ import {
   FormButtomText,
 } from '../theme/authScreenStyles';
 import {useTheme} from 'styled-components';
+import {useShowErrorMessages} from '../hooks/useShowErrorMessages';
 
 interface Props extends NativeStackScreenProps<any, any> {}
 
@@ -38,15 +39,7 @@ export const RegisterScreen = ({navigation}: Props) => {
     registerHandler,
   } = useAuth();
 
-  useEffect(() => {
-    if (inputError) {
-      Alert.alert('Error in register', inputError.message, [
-        {
-          text: 'Ok',
-        },
-      ]);
-    }
-  }, [inputError]);
+  useShowErrorMessages(inputError);
 
   return (
     <>

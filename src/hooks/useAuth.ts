@@ -1,5 +1,5 @@
 import {useMutation, useQuery} from '@apollo/client';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useCallback} from 'react';
 import {loginUpdateCache, registerUpdateCache} from '../graphql/cache/auth';
 import {LOGIN, REGISTER} from '../graphql/mutations';
 import {CURRENT_USER} from '../graphql/queries/auth';
@@ -16,9 +16,8 @@ export const useAuth = () => {
     client,
     error: userError,
   } = useQuery(CURRENT_USER, {
-    onError: error => {
-      console.log({UserError: error});
-    },
+    onError: error => console.log(error),
+    fetchPolicy: 'cache-and-network',
   });
   const user = (userData as CurrentUserResponse)?.currentUser;
 
@@ -40,10 +39,14 @@ export const useAuth = () => {
     password: '',
   });
 
-  const [loginFunc, {loading: loginLoading, error: loginError}] =
-    useMutation(LOGIN);
-  const [register, {loading: registerLoading, error: registerError}] =
-    useMutation(REGISTER);
+  const [
+    loginFunc,
+    {loading: loginLoading, error: loginError, reset: resetLogin},
+  ] = useMutation(LOGIN);
+  const [
+    register,
+    {loading: registerLoading, error: registerError, reset: resetRegister},
+  ] = useMutation(REGISTER);
 
   const loginHandler = () => {
     loginFunc({
@@ -51,7 +54,8 @@ export const useAuth = () => {
       update: loginUpdateCache,
       onCompleted: loginOnCompleted,
       onError: error => {
-        console.log({LoginError: error});
+        console.log(error);
+        resetLogin();
       },
     });
   };
@@ -61,13 +65,17 @@ export const useAuth = () => {
       variables: {user: {name, email, password, role: 'USER_ROLE'}},
       update: registerUpdateCache,
       onCompleted: registerOnCompleted,
+      onError: error => {
+        console.log(error);
+        resetRegister();
+      },
     });
   };
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await ExpireStorage.removeItem('x-token');
     await client.clearStore();
-  };
+  }, [client]);
 
   return {
     user,

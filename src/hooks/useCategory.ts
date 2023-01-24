@@ -46,6 +46,7 @@ export const useCategory = () => {
   const {
     data: categoriesData,
     loading: loadingGet,
+    error: getCategoryError,
     refetch,
     reobserve,
   }: GetCategoriesRes = useQuery(GET_CATEGORIES, {
@@ -55,14 +56,20 @@ export const useCategory = () => {
       skip: 0,
     },
   });
-  const {data: userData, error: getCategoryError}: CurrentUserRes =
+  const {data: userData, error: getCurrentUserError}: CurrentUserRes =
     useQuery(CURRENT_USER);
-  const [createCategory, {loading: loadingCreate, error: createCategoryError}] =
-    useMutation(CREATE_CATEGORY);
-  const [updateCategory, {loading: loadingUpdate, error: updateCategoryError}] =
-    useMutation(UPDATE_CATEGORY);
-  const [deleteCategory, {loading: loadingDelete, error: deleteCategoryError}] =
-    useMutation(DELETE_CATEGORY);
+  const [
+    createCategory,
+    {loading: loadingCreate, error: createCategoryError, reset: resetCreate},
+  ] = useMutation(CREATE_CATEGORY);
+  const [
+    updateCategory,
+    {loading: loadingUpdate, error: updateCategoryError, reset: resetUpdate},
+  ] = useMutation(UPDATE_CATEGORY);
+  const [
+    deleteCategory,
+    {loading: loadingDelete, error: deleteCategoryError, reset: resetDelete},
+  ] = useMutation(DELETE_CATEGORY);
 
   const categories = (categoriesData as GetCategoriesResponse | undefined)
     ?.getCategories.categories;
@@ -89,8 +96,9 @@ export const useCategory = () => {
           },
         },
         update: updateCategoryUpdateCache,
-        onError: err => {
-          console.log({err});
+        onError: error => {
+          console.log(error);
+          resetUpdate();
         },
       });
     } else {
@@ -104,8 +112,9 @@ export const useCategory = () => {
           },
         },
         update: createCategoryUpdateCache,
-        onError: err => {
-          console.log({err});
+        onError: error => {
+          console.log(error);
+          resetCreate();
         },
       });
     }
@@ -121,8 +130,9 @@ export const useCategory = () => {
         reobserve();
       },
       update: deleteCategoryUpdateCache,
-      onError: err => {
-        console.log({err});
+      onError: error => {
+        console.log(error);
+        resetDelete();
       },
     });
     closeModal();
@@ -133,11 +143,12 @@ export const useCategory = () => {
     refreshing,
     loading: loadingGet,
     loadingMutation: loadingCreate || loadingUpdate || loadingDelete,
-    inputError:
+    error:
       getCategoryError ||
       createCategoryError ||
       updateCategoryError ||
-      deleteCategoryError,
+      deleteCategoryError ||
+      getCurrentUserError,
     categoryName,
     modalVisible,
     modalData,

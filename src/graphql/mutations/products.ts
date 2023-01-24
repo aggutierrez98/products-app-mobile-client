@@ -112,63 +112,6 @@ export const UPDATE_IMAGE_CLOUDINARY = gql`
   }
 `;
 
-export const UPDATE_IMAGE = gql`
-  mutation UpdateImage($id: ID!, $collection: Collections!, $image: Upload!) {
-    updateImage(id: $id, collection: $collection, image: $image) {
-      ... on Product {
-        id
-        name
-        description
-        image
-        price
-        available
-        active
-        user {
-          id
-          name
-          email
-          image
-          role {
-            id
-            name
-          }
-          active
-          google
-        }
-        category {
-          id
-          name
-          user {
-            id
-            name
-            email
-            image
-            role {
-              id
-              name
-            }
-            active
-            google
-          }
-          active
-        }
-      }
-      ... on User {
-        id
-        name
-        email
-        image
-        role {
-          id
-          name
-        }
-        active
-        google
-      }
-    }
-  }
-`;
-
 export const DELETE_PRODUCT = gql`
   mutation DeleteProduct($id: ID!) {
     deleteProduct(id: $id) {

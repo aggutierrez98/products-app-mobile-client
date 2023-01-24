@@ -1,7 +1,7 @@
 import {Picker} from '@react-native-picker/picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
-import {Alert, Platform, RefreshControl, ScrollView} from 'react-native';
+import React from 'react';
+import {Platform, RefreshControl, ScrollView} from 'react-native';
 import {useUser} from '../hooks/useUser';
 import {UsersStackParams} from '../navigator/UsersNavigator';
 import {Loading} from '../components/Loading';
@@ -16,6 +16,7 @@ import {
 } from '../theme/detailScreenStyles';
 import {ButtonSaveText} from '../theme/defaultStlyes';
 import {UserImage} from '../components/users/UserImage';
+import {useShowErrorMessages} from '../hooks/useShowErrorMessages';
 
 interface Props
   extends NativeStackScreenProps<UsersStackParams, 'UserScreen'> {}
@@ -24,17 +25,16 @@ export const UserScreen = ({
   route: {
     params: {id: idFromParams = '', name: nameFromParams = ''},
   },
-  navigation,
 }: Props) => {
   const {
     loading,
     loadingMutation,
-    error,
     refreshing,
     modalVisible,
     tempImage,
     user,
     roles,
+    error,
     openModal,
     closeModal,
     refetchUser,
@@ -45,16 +45,7 @@ export const UserScreen = ({
   } = useUser(idFromParams, nameFromParams);
   const {colors} = useTheme();
 
-  useEffect(() => {
-    if (error) {
-      Alert.alert('Error:', error.message, [
-        {
-          text: 'Ok',
-          style: 'default',
-        },
-      ]);
-    }
-  }, [error]);
+  useShowErrorMessages(error);
 
   return (
     <>
@@ -108,7 +99,7 @@ export const UserScreen = ({
             activeOpacity={0.8}
             onPress={async () => {
               await updateUserFunction();
-              navigation.goBack();
+              // navigation.goBack();
             }}>
             <ButtonSaveText>Save</ButtonSaveText>
           </Button>

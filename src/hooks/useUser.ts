@@ -28,15 +28,22 @@ export const useUser = (id: string, name: string) => {
   }: GetUserRes = useQuery(GET_USER, {
     variables: {id},
   });
-  const [updateUser, {loading: loadingUpdate, error: updateUserError}] =
-    useMutation(UPDATE_USER);
+  const [
+    updateUser,
+    {loading: loadingUpdate, error: updateUserError, reset: resetUpdateUser},
+  ] = useMutation(UPDATE_USER);
   const [
     updateImage,
-    {loading: loadingUpdateImage, error: updateUserImageError},
+    {
+      loading: loadingUpdateImage,
+      error: updateUserImageError,
+      reset: resetUpdateImage,
+    },
   ] = useMutation(UPDATE_IMAGE_CLOUDINARY);
 
   const userFromApi = userData?.getUser;
-  const {data: rolesData}: GetRolesRes = useQuery(GET_ROLES);
+  const {data: rolesData, error: getRolesError}: GetRolesRes =
+    useQuery(GET_ROLES);
   const roles = rolesData?.getRoles.roles;
 
   const refetchUser = async () => {
@@ -76,7 +83,10 @@ export const useUser = (id: string, name: string) => {
           // // password,
         },
       },
-      onError: error => console.log(error),
+      onError: error => {
+        console.log(error);
+        resetUpdateUser();
+      },
       onCompleted: () => goBack(),
     });
 
@@ -96,7 +106,10 @@ export const useUser = (id: string, name: string) => {
         id,
         collection: 'users',
       },
-      onError: error => console.log(error),
+      onError: error => {
+        console.log(error);
+        resetUpdateImage();
+      },
       onCompleted: () => goBack(),
       update: updateUserUpdateCache,
     });
@@ -117,7 +130,8 @@ export const useUser = (id: string, name: string) => {
   return {
     tempImage,
     user,
-    error: getUserError || updateUserError || updateUserImageError,
+    error:
+      getUserError || getRolesError || updateUserError || updateUserImageError,
     roles,
     loading: loadingGet,
     loadingMutation: loadingUpdate || loadingUpdateImage,

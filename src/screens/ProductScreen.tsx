@@ -1,7 +1,7 @@
+import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
 import {Picker} from '@react-native-picker/picker';
-import {Alert, Platform, RefreshControl, ScrollView} from 'react-native';
+import {Platform, RefreshControl, ScrollView} from 'react-native';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {useProduct} from '../hooks/useProduct';
 import {Loading} from '../components/Loading';
@@ -16,6 +16,7 @@ import {
 import {useTheme} from 'styled-components';
 import {ButtonSaveText} from '../theme/defaultStlyes';
 import {ProductImage} from '../components/products/ProductImage';
+import {useShowErrorMessages} from '../hooks/useShowErrorMessages';
 
 interface Props
   extends NativeStackScreenProps<ProductsStackParams, 'ProductScreen'> {}
@@ -28,12 +29,12 @@ export const ProductScreen = ({
   const {
     product,
     categories,
-    error,
     loading,
     loadingMutation,
     tempImage,
     modalVisible,
     refreshing,
+    error,
     closeModal,
     openModal,
     saveOrUpdate,
@@ -44,16 +45,7 @@ export const ProductScreen = ({
   } = useProduct(idFromParams, nameFromParams);
   const {colors} = useTheme();
 
-  useEffect(() => {
-    if (error) {
-      Alert.alert('Error:', error.message, [
-        {
-          text: 'Ok',
-          style: 'default',
-        },
-      ]);
-    }
-  }, [error]);
+  useShowErrorMessages(error);
 
   return (
     <>

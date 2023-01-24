@@ -1,6 +1,6 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useEffect, useState} from 'react';
-import {Alert, Keyboard, Platform} from 'react-native';
+import React, {useState} from 'react';
+import {Keyboard, Platform} from 'react-native';
 import {Background} from '../components/Background';
 import {Logo} from '../components/Logo';
 import {Loading} from '../components/Loading';
@@ -22,6 +22,7 @@ import {
 } from '../theme/authScreenStyles';
 
 import {useTheme} from 'styled-components';
+import {useShowErrorMessages} from '../hooks/useShowErrorMessages';
 
 interface Props extends NativeStackScreenProps<any, any> {}
 
@@ -30,17 +31,7 @@ export const LoginScreen = ({navigation}: Props) => {
   const {colors} = useTheme();
   const {email, password, onChange, loading, loginHandler, inputError} =
     useAuth();
-
-  useEffect(() => {
-    if (inputError) {
-      Alert.alert('Error in login', inputError.message, [
-        {
-          text: 'Ok',
-          style: 'default',
-        },
-      ]);
-    }
-  }, [inputError]);
+  useShowErrorMessages(inputError);
 
   return (
     <>

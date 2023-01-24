@@ -7,8 +7,10 @@ import {GetProductsRes} from '../interfaces';
 
 export const useProducts = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const [deleteProduct, {loading: loadingDelete, error: deleteProductError}] =
-    useMutation(DELETE_PRODUCT);
+  const [
+    deleteProduct,
+    {loading: loadingDelete, error: deleteProductError, reset: resetDelete},
+  ] = useMutation(DELETE_PRODUCT);
   const {
     data,
     refetch,
@@ -29,8 +31,9 @@ export const useProducts = () => {
       onCompleted: () => {
         reobserve();
       },
-      onError: err => {
-        console.log({err});
+      onError: error => {
+        console.log(error);
+        resetDelete();
       },
       update: deleteProductUpdateCache,
     });
