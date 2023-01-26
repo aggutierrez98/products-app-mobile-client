@@ -68,7 +68,13 @@ export const useProduct = (id: string, name: string) => {
       error: updateImageProductError,
       reset: resetUpdateImage,
     },
-  ] = useMutation(UPDATE_IMAGE_CLOUDINARY);
+  ] = useMutation(UPDATE_IMAGE_CLOUDINARY, {
+    context: {
+      headers: {
+        'apollo-require-preflight': true,
+      },
+    },
+  });
 
   const refetchProduct = async () => {
     setRefreshing(true);

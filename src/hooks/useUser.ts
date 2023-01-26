@@ -39,7 +39,13 @@ export const useUser = (id: string, name: string) => {
       error: updateUserImageError,
       reset: resetUpdateImage,
     },
-  ] = useMutation(UPDATE_IMAGE_CLOUDINARY);
+  ] = useMutation(UPDATE_IMAGE_CLOUDINARY, {
+    context: {
+      headers: {
+        'apollo-require-preflight': true,
+      },
+    },
+  });
 
   const userFromApi = userData?.getUser;
   const {data: rolesData, error: getRolesError}: GetRolesRes =
